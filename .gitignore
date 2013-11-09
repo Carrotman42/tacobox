@@ -46,3 +46,6 @@ libgdx-*.zip
 /extensions/gdx-controllers/gdx-controllers-desktop/libs/
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
+
+Thumbs.db
+.metadata
