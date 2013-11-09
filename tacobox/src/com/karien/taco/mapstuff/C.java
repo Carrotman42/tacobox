@@ -18,4 +18,9 @@ public interface C {
 	String Disappear = "disappear";
 	String Appear = "appear";
 	String Toggle = "toggle";
+	
+	// Layers
+	int TileLayer = 0;
+	int ActionLayer = 1;
+	int ObjectLayer = 2;
 }
