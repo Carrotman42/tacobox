@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
+ <properties>
+  <property name="goalX" value="17"/>
+  <property name="goalY" value="2"/>
+  <property name="spawnX" value="1"/>
+  <property name="spawnY" value="16"/>
+ </properties>
  <tileset firstgid="1" name="dungeon" tilewidth="32" tileheight="32">
   <image source="DungeonCrawl_ProjectUtumnoTileset.png" width="2048" height="1536"/>
  </tileset>
