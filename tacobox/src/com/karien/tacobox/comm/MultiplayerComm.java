@@ -12,38 +12,40 @@ import com.karien.taco.mapstuff.map.MapID;
 public class MultiplayerComm implements Runnable, MsgHandler {
 	private final Socket sock;
 	private final boolean master;
-	
+
 	private ArrayBlockingQueue<Msg> inActs = new ArrayBlockingQueue<Msg>(5);
-	
+
 	public MultiplayerComm(Socket s, boolean master) {
 		sock = s;
 		this.master = master;
-		
+
 		new Thread(this).start();
 	}
-	
+
 	/**
 	 * Call this in some tick loop to see if an action from the other player.
-	 * @return The coordinate send from the partner or null if there was none to read.
+	 * 
+	 * @return The coordinate send from the partner or null if there was none to
+	 *         read.
 	 */
 	public ActionMessage recvAction() {
 		Msg msg = inActs.peek();
 		if (msg == null) {
 			return null;
-		}else if (msg.msg != null) {
+		} else if (msg.msg != null) {
 			return inActs.poll().msg;
 		}
 		// Else it's a sync or map choice
 		return null;
 	}
-	
+
 	public static MultiplayerComm connect(int port) throws IOException {
 		ServerSocket serv = new ServerSocket(port);
-		
+
 		Socket sock;
-		while(true) {
+		while (true) {
 			Socket rec = serv.accept();
-			
+
 			int d = rec.getInputStream().read();
 			if (d == 42) {
 				sock = rec;
@@ -54,23 +56,24 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 				rec.close();
 			}
 		}
-		
+
 		return new MultiplayerComm(sock, true);
 	}
 
-	public static MultiplayerComm connect(String addr, int port) throws IOException {
+	public static MultiplayerComm connect(String addr, int port)
+			throws IOException {
 		Socket s;
 		while (true) {
 			s = new Socket(addr, port);
 			s.getOutputStream().write(42);
-			
+
 			if (s.getInputStream().read() != 44) {
 				s.close();
 			} else {
 				break;
 			}
 		}
-		
+
 		return new MultiplayerComm(s, false);
 	}
 
@@ -85,7 +88,7 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 		}
 		while (true) {
 			String line = sc.nextLine();
-			
+
 			char first = line.charAt(0);
 			Msg msg;
 			if (first == ':') {
@@ -95,26 +98,28 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 				msg = new Msg(null, MapID.valueOf(line));
 			}
 
-			// We want an exception on full because something's wrong in that case.
+			// We want an exception on full because something's wrong in that
+			// case.
 			inActs.add(msg);
 		}
 	}
 
 	@Override
 	public void postMessage(ActionMessage msg) throws IOException {
-		// TODO: Check that this won't block so that we don't block the gui thread
-		
+		// TODO: Check that this won't block so that we don't block the gui
+		// thread
+
 		write(":" + msg.toString());
 	}
-	
+
 	/**
 	 * You can tell that we're getting down to the wire in the hackathon
-	 *
+	 * 
 	 */
 	private static class Msg {
 		final ActionMessage msg;
 		final MapID newMap;
-		
+
 		Msg(ActionMessage msg, MapID newMap) {
 			this.msg = msg;
 			this.newMap = newMap;
@@ -122,6 +127,7 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 	}
 
 	private MapID last;
+
 	@Override
 	public String syncAndGetMapPath() throws IOException {
 		if (master) {
@@ -151,28 +157,25 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 				Msg msg;
 				try {
 					msg = inActs.take();
-				}catch(InterruptedException ex) {
+				} catch (InterruptedException ex) {
 					System.out.println("Ignored interrupted: " + ex);
 					continue;
 				}
-				
+
 				if (msg.msg != null) {
-					System.out.println("Consumed unused map action: " + msg.msg);
+					System.out
+							.println("Consumed unused map action: " + msg.msg);
 				} else {
 					last = msg.newMap;
+					System.out.println("Got map: " + msg);
 					return msg.newMap.getPath(false);
 				}
-				
-			} while(true);
+
+			} while (true);
 		}
 	}
-	
+
 	private void write(String s) throws IOException {
 		sock.getOutputStream().write((s + "\n").getBytes());
 	}
 }
-
-
-
-
-

@@ -29,7 +29,7 @@ public class MyTacoBox extends Game {
 			state = GameState.WaitForAction;
 			break;
 		case WaitForAction:
-			//state = GameState.LoadFirstLevel;
+			// state = GameState.LoadFirstLevel;
 			break;
 		case LoadFirstLevel:
 			lvls = new LevelHelper(multi, this);
@@ -88,14 +88,14 @@ public class MyTacoBox extends Game {
 				throw new RuntimeException(
 						"Invalid state to call this function");
 			}
-			hostMultiplayer();
+			multi = hostMultiplayer();
 			state = GameState.LoadFirstLevel;
 		} else if (action.equals("join")) {
-			if (state != GameState.Title) {
+			if (state != GameState.WaitForAction) {
 				throw new RuntimeException(
-						"Invalid state to call this function");
+						"Invalid state to call this function: " + state);
 			}
-			joinMultiplayer();
+			multi = joinMultiplayer();
 			state = GameState.LoadFirstLevel;
 		}
 	}
