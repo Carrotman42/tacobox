@@ -67,7 +67,7 @@ public class MapActions {
 
 			if (hadAny) {
 				actable.put(c, o);
-				//System.out.println("Got action on obj at " + c);
+				System.out.println("Got action on obj at " + c);
 			}
 			
 			Object id = props.get(C.Id);
