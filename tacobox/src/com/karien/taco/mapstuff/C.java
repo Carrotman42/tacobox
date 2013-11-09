@@ -18,8 +18,6 @@ public interface C {
 	boolean defaultMoveable = false;
 	
 	// Action layer properties
-	String remoteAct = "remoteAct";
-	String localAct = "localAct";
 	String onExit = "onExit";
 	String onActivate = "onActivate";
 	String onEnter = "onEnter";

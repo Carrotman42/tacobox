@@ -58,21 +58,14 @@ public class MapActions {
 					| makeAction(props, C.onEnter);
 
 			if (hadAny) {
-				Object rem = props.get(C.remoteAct);
-				Object local = props.get(C.localAct);
-
-				if (rem == null && local == null) {
-					throw new RuntimeException(
-							"Object at ("
-									+ props.get("x")
-									+ ", "
-									+ props.get("y")
-									+ ") had actions assigned to it but no target for those actions!");
-				}
-
 				actable.put(
 						new Coord((Integer) props.get("x"), (Integer) props
 								.get("y")), o);
+			}
+			
+			Object id = props.get(C.Id);
+			if (id != null) {
+				objects.put((String) id, o);
 			}
 
 			setDefaults(props);
@@ -119,13 +112,13 @@ public class MapActions {
 		}
 
 		MapProperties props = obj.getProperties();
-		MapAction act = (MapAction) props.get(actStr);
+		ActionAction act = (ActionAction) props.get(actStr);
 		if (act != null) {
-			Object dest = props.get(C.remoteAct);
-			if (dest != null) {
-				sendRemoteMsg(dest.toString(), act);
+			if (act.remote) {
+				sendRemoteMsg(act.targetId, act.act);
 			} else {
-				act.doit(obj);
+				MapObject dest = objects.get(act.targetId);
+				act.act.doit(dest);
 			}
 		}
 	}
@@ -170,12 +163,18 @@ public class MapActions {
 	}
 
 	private static boolean makeAction(MapProperties props, String propName) {
-		Object pp = props.get(propName);
+		String pp = (String)props.get(propName);
 		if (pp == null) {
 			return false;
 		}
-
-		props.put(propName, MapAction.getAction((String) pp));
+		
+		char location = pp.charAt(0);
+		int colon = pp.indexOf(':');
+		if (location != 'r' && location != 'l' || colon == -1) {
+			throw new RuntimeException("Bad action string: " + pp);
+		}
+		
+		props.put(propName, new ActionAction(location == 'r', pp.substring(1, colon), MapAction.valueOf(pp.substring(colon+1))));
 
 		return true;
 	}
