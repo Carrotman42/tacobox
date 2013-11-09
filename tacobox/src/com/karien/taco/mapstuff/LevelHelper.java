@@ -22,29 +22,22 @@ public class LevelHelper {
 			throw new RuntimeException("Already loading a level!");
 		}
 		loading = true;
-<<<<<<< HEAD
 		new lvlLoader(nextMapPath()).run();
-		//new Thread(new lvlLoader("maps/lightTest.tmx")).start();
+		// new Thread(new lvlLoader("maps/lightTest.tmx")).start();
 	}
-	
+
 	private String nextMapPath() {
 		if (msg == null) {
 			return MapID.Test.getPath(true);
 		}
-		
+
 		try {
 			return msg.syncAndGetMapPath();
-		}catch (IOException ex) {
+		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
 	}
-	
-=======
-		new lvlLoader("maps/lightComplex.tmx").run();
-		// new Thread(new lvlLoader("maps/lightTest.tmx")).start();
-	}
 
->>>>>>> 46aa977adbae7714c1f708d0076a556dd9615e55
 	public synchronized boolean isLevelLoaded() {
 		if (!loading) {
 			throw new RuntimeException("Not currently loading a level!");
