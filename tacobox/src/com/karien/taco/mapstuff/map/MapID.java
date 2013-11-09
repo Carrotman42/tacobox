@@ -7,7 +7,7 @@ public enum MapID {
 		String suffix;
 		switch (this) {
 		case Test:
-			suffix = "Complex";
+			suffix = "Test";
 			break;
 		case Normal:
 			suffix = "Complex";

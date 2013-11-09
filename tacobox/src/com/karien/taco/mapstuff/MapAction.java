@@ -18,7 +18,7 @@ public enum MapAction {
 		@Override
 		void doit(MapObject obj) {
 			MapProperties p = obj.getProperties();
-			p.put(C.Visible, p.get(C.Visible, boolean.class));
+			p.put(C.Visible, !p.get(C.Visible, boolean.class));
 		}
 	};
 	
