@@ -26,7 +26,6 @@ public class MapActions {
 		HashMap<Integer, MapObject> actions = new HashMap<Integer, MapObject>();
 		
 		TiledMapTileLayer l = (TiledMapTileLayer)map.getLayers().get(C.ActionLayer);
-		
 		for (MapObject o : l.getObjects()) {
 			MapProperties props = o.getProperties();
 			
@@ -60,7 +59,7 @@ public class MapActions {
 		this.actions = actions;
 	}
 	
-	public void doAction(MapObject obj) {
+	public void checkAction(int x, int y) {
 		
 	}
 	
