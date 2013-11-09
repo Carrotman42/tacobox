@@ -34,6 +34,12 @@
     <property name="onActivate" value="l16:disappear,l18:appear"/>
    </properties>
   </object>
+  <object gid="11" x="64" y="352">
+   <properties>
+    <property name="onEnter" value="r4:toggle"/>
+    <property name="onExit" value="r4:toggle"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="object" width="20" height="20">
   <object gid="855" x="448" y="160"/>
