@@ -11,6 +11,8 @@ public class MyTacoBox extends Game {
 	private LevelHelper lvls;
 	private GameState state = GameState.Title;
 	
+	
+	
 	@Override
 	public void create() {	
 	}
@@ -23,9 +25,13 @@ public class MyTacoBox extends Game {
 		case Title:
 			state = GameState.LoadFirstLevel;
 			break;
+		case ConnectMultiplayer:
+			
+			break;
 		case LoadFirstLevel:
 			lvls = new LevelHelper(null, this);
 			lvls.loadNextLevel();
+			setScreen(new LoadingScreen());
 			state = GameState.WaitLoadFirstLevel;
 			break;
 		case WaitLoadFirstLevel:
