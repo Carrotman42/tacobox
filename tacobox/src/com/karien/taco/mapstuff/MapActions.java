@@ -112,6 +112,11 @@ public class MapActions {
 		}
 
 		MapProperties props = obj.getProperties();
+		if (!(Boolean)props.get(C.Visible)) {
+			return;
+		}
+		
+		
 		ActionAction act = (ActionAction) props.get(actStr);
 		if (act != null) {
 			if (act.remote) {
