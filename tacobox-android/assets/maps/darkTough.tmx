@@ -1,11 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
+ <properties>
+  <property name="goalX" value="5"/>
+  <property name="goalY" value="19"/>
+  <property name="spawnX" value="15"/>
+  <property name="spawnY" value="0"/>
+ </properties>
  <tileset firstgid="1" name="dungeon" tilewidth="32" tileheight="32">
   <image source="DungeonCrawl_ProjectUtumnoTileset.png" width="2048" height="1536"/>
  </tileset>
- <layer name="Tile Layer 1" width="20" height="20">
+ <tileset firstgid="3073" name="DungeonCrawl_ProjectUtumnoTileset" tilewidth="32" tileheight="32">
+  <image source="DungeonCrawl_ProjectUtumnoTileset.png" width="2048" height="1536"/>
+ </tileset>
+ <layer name="canvas" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJy1k8ENwCAMA5HoAizZ/Ufg20ccnxF9REhB4MMO6xljHdY7df9G0TtT1u7cd6/Tq/iIrto/5et6nY7Spb3KD+WR889lqN7k8nUzQ3L+i0/pqowIX5I5YU3WhM+9N/GP8lO+ZF4IK50b5Q2d5+4v3uKtagOqNl2F
+   eJytklEKgDAMQwf673Ynz7L7H0GG1LnZtOlQCMqY6WvasqdUFlU3fP6HPrXyrTP3b8RgsT7+7f+jS/zkrsWF+DQ/Ky/NL8I33Ad+c37ihfiYs5nxzYb4UH5zj+0Zegc9efP1douZs1fXytziQ3U1P5ZPnbnhx/bDvCN8Xr+R/Fh+li+yLwwruzcoG3afkYfmt8qr6QKJ5GE/
   </data>
  </layer>
+ <objectgroup name="action" width="20" height="20">
+  <object gid="4838" x="128" y="160">
+   <properties>
+    <property name="blocked" value="false"/>
+    <property name="id" value="20"/>
+    <property name="onActivate" value="r13:disappear"/>
+   </properties>
+  </object>
+  <object gid="4838" x="160" y="160">
+   <properties>
+    <property name="blocked" value="false"/>
+    <property name="id" value="21"/>
+    <property name="onActivate" value="l19:appear"/>
+    <property name="visible" value="false"/>
+   </properties>
+  </object>
+  <object gid="4838" x="192" y="160">
+   <properties>
+    <property name="blocked" value="false"/>
+    <property name="id" value="22"/>
+    <property name="onActivate" value="l23:appear"/>
+   </properties>
+  </object>
+  <object gid="6059" x="448" y="192">
+   <properties>
+    <property name="blocked" value=""/>
+    <property name="id" value="false"/>
+    <property name="onActivate" value="r4:disappear"/>
+   </properties>
+  </object>
+  <object gid="3083" x="576" y="448">
+   <properties>
+    <property name="blocked" value="false"/>
+    <property name="id" value="31"/>
+    <property name="onEnd" value="toggle"/>
+    <property name="onEnter" value="l32:disappear"/>
+   </properties>
+  </object>
+  <object gid="3083" x="32" y="64">
+   <properties>
+    <property name="blocked" value="false"/>
+    <property name="id" value="16"/>
+    <property name="onEnter" value="l32:disappear"/>
+    <property name="onExit" value="toggle"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="object" width="20" height="20">
+  <object gid="4199" x="448" y="416">
+   <properties>
+    <property name="id" value="29"/>
+    <property name="moveable" value="true"/>
+   </properties>
+  </object>
+  <object gid="4228" x="160" y="288">
+   <properties>
+    <property name="id" value="24"/>
+   </properties>
+  </object>
+  <object gid="4198" x="64" y="96">
+   <properties>
+    <property name="id" value="18"/>
+    <property name="moveable" value="true"/>
+   </properties>
+  </object>
+  <object gid="3889" x="416" y="224">
+   <properties>
+    <property name="id" value="27"/>
+    <property name="onActivate" value="l27:disappear"/>
+   </properties>
+  </object>
+  <object gid="3889" x="64" y="64">
+   <properties>
+    <property name="id" value="17"/>
+    <property name="onActivate" value="l17:disappear"/>
+   </properties>
+  </object>
+  <object gid="3889" x="448" y="448">
+   <properties>
+    <property name="id" value="30"/>
+    <property name="onActivate" value="l30:disappear"/>
+   </properties>
+  </object>
+  <object gid="5840" x="512" y="160">
+   <properties>
+    <property name="id" value="26"/>
+   </properties>
+  </object>
+  <object gid="4225" x="160" y="608">
+   <properties>
+    <property name="id" value="32"/>
+   </properties>
+  </object>
+  <object gid="4225" x="576" y="288">
+   <properties>
+    <property name="id" value="28"/>
+   </properties>
+  </object>
+  <object gid="3884" x="160" y="256">
+   <properties>
+    <property name="id" value="23"/>
+    <property name="onActivate" value="l23:disappear"/>
+   </properties>
+  </object>
+  <object gid="4164" x="160" y="96">
+   <properties>
+    <property name="id" value="19"/>
+    <property name="visible" value="false"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>
