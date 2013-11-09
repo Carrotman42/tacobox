@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
@@ -34,7 +36,7 @@ public class Player implements InputProcessor {
 
 	public Player(String spritePath, TiledMap map, MapActions actions, int x,
 			int y) {
-		
+
 		MapLayers layers = map.getLayers();
 		TiledMapTileLayer tiles = (TiledMapTileLayer) layers.get(C.TileLayer);
 		TILE_WIDTH = tiles.getTileWidth();
@@ -62,33 +64,104 @@ public class Player implements InputProcessor {
 		return (int) ((int) (mPos.y) * TILE_HEIGHT);
 	}
 
-	// public boolean isBlocked(int x, int y) {
-	// MapProperties props = mCollisionLayer.getCell(x, y).getTile()
-	// .getProperties();
-	// Boolean visible = (Boolean) props.get(C.Visible);
-	// Boolean blocked = (Boolean) props.get(C.Blocked);
-	// return visible && blocked;
-	// }
+	public boolean isBlocking(MapObject obj) {
+		Boolean visible = false;
+		Boolean blocked = false;
+		// Find object
+		MapProperties props = obj.getProperties();
+		// Get Properties
+		visible = (Boolean) props.get(C.Visible);
+		blocked = (Boolean) props.get(C.Blocked);
+
+		return visible && blocked;
+	}
+
+	private MapObject findObj(int x, int y) {
+		MapObject obj = null;
+		for (MapObject object : mCollisionLayer.getObjects()) {
+			MapProperties props = object.getProperties();
+			if ((Integer) props.get("x") == x && (Integer) props.get("y") == y) {
+				obj = object;
+				break;
+			}
+		}
+		return obj;
+	}
+
+	/**
+	 * Try to move to tile at x,y
+	 */
+	public boolean move(int x, int y) {
+		MapObject obj = findObj(x, y);
+
+		if (obj != null && isBlocking(obj)) {
+			// See if object is movable
+			Boolean moveable = (Boolean) obj.getProperties().get(C.Moveable);
+			if (!moveable)
+				return false;
+			// See if object can be moved
+			int obj2X = getX() + 2 * (x - getX());
+			int obj2Y = getY() + 2 * (y - getY());
+			MapObject obj2 = findObj(obj2X, obj2Y);
+			if (obj2 != null && isBlocking(obj2)) {
+				// Can't move obj
+				return false;
+			}
+
+			// Move obj
+			obj.getProperties().put("x", obj2X);
+			obj.getProperties().put("y", obj2Y);
+			// Do exit/enter
+			mActions.exit(x, y);
+			mActions.enter(obj2X, obj2Y);
+
+		}
+
+		// Move Player
+		int oldX = getX();
+		int oldY = getY();
+
+		setPosition(x, y);
+		// Do exit/enter
+		mActions.exit(oldX, oldY);
+		mActions.enter(x, y);
+
+		return true;
+	}
 
 	public void update(float delta) {
-		//Move player
+		// Move player
+		int curX = getX();
+		int curY = getY();
+		float X, Y;
+
 		if (mVelocity.x != 0) {
-			// TODO: check collision
-			setPosition(mPos.x + mVelocity.x * delta * mSpeed, mPos.y);
+			X = mPos.x + mVelocity.x * delta * mSpeed;
+			if ((int) X - curX != 0) {
+				move((int) X, curY);
+			} else {
+				// Update partial position
+				setPosition(X, curY);
+			}
 		}
 
 		if (mVelocity.y != 0) {
-			// TODO: check collision
-			setPosition(mPos.x, mPos.y + mVelocity.y * delta * mSpeed);
+			Y = mPos.y + mVelocity.y * delta * mSpeed;
+			if ((int) Y - curY != 0) {
+				move(curX, (int) Y);
+			} else {
+				// Update partial position
+				setPosition(curX, Y);
+			}
 		}
-		
-		// When the user does an activate: 
-		//   mActions.activate(x, y)
+
+		// When the user does an activate:
+		// mActions.activate(x, y)
 		// When the user enters a square:
-		//   mActions.enter(x, y)
+		// mActions.enter(x, y)
 		// When the user exists a square:
-		//   mActions.exit(x, y)
-		
+		// mActions.exit(x, y)
+
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
