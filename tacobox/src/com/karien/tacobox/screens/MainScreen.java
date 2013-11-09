@@ -52,7 +52,12 @@ public class MainScreen implements Screen {
 				&& mPlayer.getY() == (Integer) map.getProperties().get("goalY")) {
 			callback.goalReached();
 		}
+<<<<<<< HEAD
+		
+		acts.checkRemoteMessage();
+=======
 
+>>>>>>> 46aa977adbae7714c1f708d0076a556dd9615e55
 	}
 
 	public void drawObjects(String layerID) {
