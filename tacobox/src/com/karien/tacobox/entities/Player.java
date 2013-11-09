@@ -19,12 +19,14 @@ import com.karien.taco.mapstuff.MapActions;
 public class Player implements InputProcessor {
 
 	Sprite mSprite;
+	Texture playerTextures[];
+
 	Vector2 mPos;
 	final MapLayer mCollisionLayer;
 	final MapActions mActions;
 
 	Vector2 mVelocity;
-
+	float mSpeed = 8f;
 	MapObject mGrabbedObj;
 
 	public static enum EFacing {
@@ -33,16 +35,14 @@ public class Player implements InputProcessor {
 
 	EFacing mFacing;
 
-	float mSpeed = 8f;
-
 	public final float TILE_WIDTH, TILE_HEIGHT;
 
-	public Player(String spritePath, TiledMap map, MapActions actions) {
-		this(spritePath, map, actions, 0, 0);
+	public Player(String[] spritePaths, TiledMap map, MapActions actions) {
+		this(spritePaths, map, actions, 0, 0);
 	}
 
-	public Player(String spritePath, TiledMap map, MapActions actions, int x,
-			int y) {
+	public Player(String[] spritePaths, TiledMap map, MapActions actions,
+			int x, int y) {
 
 		MapLayers layers = map.getLayers();
 		TiledMapTileLayer tiles = (TiledMapTileLayer) layers.get(C.TileLayer);
@@ -52,10 +52,14 @@ public class Player implements InputProcessor {
 		mCollisionLayer = layers.get(C.ObjectLayer);
 		mActions = actions;
 
-		mSprite = new Sprite(new Texture(spritePath));
+		mFacing = EFacing.S;
+		playerTextures = new Texture[4];
+		for (int i = 0; i < spritePaths.length; i++) {
+			playerTextures[i] = new Texture(spritePaths[i]);
+		}
+		mSprite = new Sprite(playerTextures[mFacing.ordinal()]);
 		mPos = new Vector2();
 		mVelocity = new Vector2();
-		mFacing = EFacing.S;
 		setPosition(x, y);
 
 		mGrabbedObj = null;
@@ -173,21 +177,7 @@ public class Player implements InputProcessor {
 		}
 
 		// Update image based on Facing
-		switch (mFacing) {
-		case E:
-			mSprite.setRotation(90);
-			break;
-		case N:
-			mSprite.setRotation(180);
-			break;
-		case W:
-			mSprite.setRotation(270);
-			break;
-		case S:
-		default:
-			mSprite.setRotation(0);
-			break;
-		}
+		mSprite.setTexture(playerTextures[mFacing.ordinal()]);
 
 	}
 
@@ -197,7 +187,9 @@ public class Player implements InputProcessor {
 	}
 
 	public void dispose() {
-		mSprite.getTexture().dispose();
+		for (Texture texture : playerTextures) {
+			texture.dispose();
+		}
 	}
 
 	@Override

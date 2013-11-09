@@ -78,7 +78,8 @@ public class MainScreen implements Screen {
 		renderer = new OrthogonalTiledMapRenderer(map);
 		camera = new OrthographicCamera();
 
-		mPlayer = new Player("player.png", map, acts, (Integer) map
+		mPlayer = new Player(new String[] { "man_back.png", "man_front.png",
+				"man_right.png", "man_left.png" }, map, acts, (Integer) map
 				.getProperties().get(C.SpawnX), (Integer) map.getProperties()
 				.get(C.SpawnY));
 
