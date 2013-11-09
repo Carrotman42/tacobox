@@ -125,13 +125,15 @@ public class MapActions {
 			return;
 		}
 		
-		ActionAction act = (ActionAction) props.get(actStr);
-		if (act != null) {
-			if (act.remote) {
-				sendRemoteMsg(act.targetId, act.act);
-			} else {
-				MapObject dest = objects.get(act.targetId);
-				act.act.doit(dest);
+		ActionAction[] acts = (ActionAction[]) props.get(actStr);
+		if (acts != null) {
+			for (ActionAction act : acts) {
+				if (act.remote) {
+					sendRemoteMsg(act.targetId, act.act);
+				} else {
+					MapObject dest = objects.get(act.targetId);
+					act.act.doit(dest);
+				}
 			}
 		}
 	}
@@ -176,19 +178,27 @@ public class MapActions {
 	}
 
 	private static boolean makeAction(MapProperties props, String propName) {
-		String pp = (String)props.get(propName);
-		if (pp == null) {
+		String propstr = (String)props.get(propName);
+		if (propstr == null) {
 			return false;
 		}
 		
-		char location = pp.charAt(0);
-		int colon = pp.indexOf(':');
-		if (location != 'r' && location != 'l' || colon == -1) {
-			throw new RuntimeException("Bad action string: " + pp);
-		}
+		String[] acts = propstr.split(",");
+		ActionAction[] out = new ActionAction[acts.length];
 		
-		props.put(propName, new ActionAction(location == 'r', pp.substring(1, colon), MapAction.valueOf(pp.substring(colon+1))));
+		for (int i = 0; i < acts.length; i++) {
+			String pp = acts[i];
+			char location = pp.charAt(0);
+			int colon = pp.indexOf(':');
+			if (location != 'r' && location != 'l' || colon == -1) {
+				throw new RuntimeException("Bad action string: " + pp);
+			}
+			
+			out[i] = new ActionAction(location == 'r', pp.substring(1, colon), MapAction.valueOf(pp.substring(colon+1)));
+		}
+		props.put(propName, out);
 
+		
 		return true;
 	}
 }
