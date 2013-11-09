@@ -86,7 +86,19 @@ public class MapActions {
 			if (id != null) {
 				objects.put((String) id, o);
 			}
+			
+			Coord c = new Coord(((Integer) props.get("x"))/tileSize, ((Integer) props.get("y"))/tileSize);
+			//System.out.println("Got action obj at " + c);
+			boolean hadAny = makeAction(props, C.onExit)
+					| // Note: Can't do the short-circuiting || operator!
+					makeAction(props, C.onActivate)
+					| makeAction(props, C.onEnter);
 
+			if (hadAny) {
+				actable.put(c, o);
+				System.out.println("Got action on obj at " + c);
+			}
+			
 			setDefaults(props);
 		}
 
