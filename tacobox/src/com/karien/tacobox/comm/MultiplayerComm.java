@@ -126,19 +126,22 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 	public String syncAndGetMapPath() throws IOException {
 		if (master) {
 			MapID next = null;
-			switch (last) {
-			default:
+			if (last == null) {
 				next = MapID.Test;
-				break;
-			case Test:
-				next = MapID.Normal;
-				break;
-			case Normal:
-				next = MapID.Hard;
-				break;
-			case Hard:
-				next = MapID.End;
-				break;
+			} else {
+				switch (last) {
+				case Test:
+					next = MapID.Normal;
+					break;
+				case Normal:
+					next = MapID.Hard;
+					break;
+				case Hard:
+					next = MapID.End;
+					break;
+				default:
+					throw new RuntimeException("Unknown map: " + last);
+				}
 			}
 			last = next;
 			write(next.toString());

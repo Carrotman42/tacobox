@@ -53,6 +53,7 @@ public class MainScreen implements Screen {
 			callback.goalReached();
 		}
 		
+		acts.checkRemoteMessage();
 	}
 
 	public void drawObjects(int layerID) {
