@@ -20,19 +20,18 @@ public class MainScreen implements Screen {
 	private final TiledMap map;
 	private final MapActions acts;
 	private final MyTacoBox callback;
-	
+
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
 
 	Player mPlayer;
 
-	
 	public MainScreen(Level lvl) {
 		this.map = lvl.map;
 		this.acts = lvl.acts;
 		this.callback = lvl.parent;
 	}
-	
+
 	@Override
 	public void render(float delta) {
 		camera.position.lerp(new Vector3(mPlayer.getX() * mPlayer.TILE_WIDTH,
@@ -48,15 +47,20 @@ public class MainScreen implements Screen {
 		mPlayer.draw(renderer.getSpriteBatch());
 		drawObjects(C.ObjectLayer);
 		renderer.getSpriteBatch().end();
-		
-		if (mPlayer.getX() == (Integer)map.getProperties().get("goalX") && mPlayer.getY() == (Integer)map.getProperties().get("goalY")){
+
+		if (mPlayer.getX() == (Integer) map.getProperties().get("goalX")
+				&& mPlayer.getY() == (Integer) map.getProperties().get("goalY")) {
 			callback.goalReached();
 		}
+<<<<<<< HEAD
 		
 		acts.checkRemoteMessage();
+=======
+
+>>>>>>> 46aa977adbae7714c1f708d0076a556dd9615e55
 	}
 
-	public void drawObjects(int layerID) {
+	public void drawObjects(String layerID) {
 		for (MapObject obj : map.getLayers().get(layerID).getObjects()) {
 			MapProperties props = obj.getProperties();
 			if ((Boolean) props.get(C.Visible)) {
@@ -79,7 +83,8 @@ public class MainScreen implements Screen {
 		renderer = new OrthogonalTiledMapRenderer(map);
 		camera = new OrthographicCamera();
 
-		mPlayer = new Player("player.png", map, acts, (Integer) map
+		mPlayer = new Player(new String[] { "man_back.png", "man_front.png",
+				"man_right.png", "man_left.png" }, map, acts, (Integer) map
 				.getProperties().get(C.SpawnX), (Integer) map.getProperties()
 				.get(C.SpawnY));
 
