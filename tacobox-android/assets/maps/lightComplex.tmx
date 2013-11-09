@@ -40,6 +40,7 @@
     <property name="onExit" value="l11:toggle"/>
    </properties>
   </object>
+  <object gid="732" x="544" y="64"/>
  </objectgroup>
  <objectgroup name="object" width="20" height="20">
   <object gid="1033" x="480" y="64"/>
@@ -145,7 +146,6 @@
   <object gid="1033" x="256" y="288"/>
   <object gid="1034" x="128" y="256"/>
   <object gid="1034" x="160" y="256"/>
-  <object gid="732" x="544" y="64"/>
   <object gid="752" x="576" y="64"/>
   <object gid="750" x="512" y="64"/>
   <object gid="1033" x="512" y="288"/>
@@ -194,5 +194,6 @@
     <property name="id" value="4"/>
    </properties>
   </object>
+  <object gid="1033" x="544" y="32"/>
  </objectgroup>
 </map>
