@@ -1,7 +1,5 @@
 package com.karien.tacobox;
 
-import java.util.Scanner;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,27 +7,29 @@ import com.karien.taco.mapstuff.LevelHelper;
 import com.karien.tacobox.comm.MultiplayerComm;
 import com.karien.tacobox.screens.LoadingScreen;
 import com.karien.tacobox.screens.MainScreen;
+import com.karien.tacobox.screens.MenuScreen;
 
 public class MyTacoBox extends Game {
 	private LevelHelper lvls;
 	private GameState state = GameState.Title;
-	
+
 	private MultiplayerComm multi;
-	
+
 	@Override
-	public void create() {	
+	public void create() {
 	}
-	
+
 	@Override
 	public void render() {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		switch (state) {
 		case Title:
-			state = GameState.ConnectMultiplayer;
+			setScreen(new MenuScreen(this));
+			// state = GameState.ConnectMultiplayer;
 			break;
 		case ConnectMultiplayer:
-			multi = connectMultiplayer();
+			multi = null;// connectMultiplayer();
 			state = GameState.LoadFirstLevel;
 			break;
 		case LoadFirstLevel:
@@ -47,7 +47,7 @@ public class MyTacoBox extends Game {
 			}
 			break;
 		case Level:
-			//super.render();
+			// super.render();
 			// nothing special other than rendering
 			break;
 		case LevelJustFinished:
@@ -68,13 +68,13 @@ public class MyTacoBox extends Game {
 			setScreen(new MainScreen(lvls.getLoadedLevel()));
 			state = GameState.Level;
 			break;
-			
+
 		default:
 			throw new RuntimeException("Invalid state!");
 		}
 		super.render();
 	}
-	
+
 	public void goalReached() {
 		state = GameState.LevelJustFinished;
 	}
@@ -82,39 +82,40 @@ public class MyTacoBox extends Game {
 	public void died() {
 		throw new RuntimeException("Not implemented!");
 	}
-	
+
 	public void menuChoice(String action) {
-		if (action.equals("start")) {
+		if (action.equals("host")) {
 			if (state != GameState.Title) {
-				throw new RuntimeException("Invalid state to call this function");
+				throw new RuntimeException(
+						"Invalid state to call this function");
 			}
-			state = GameState.LoadFirstLevel;
+			hostMultiplayer();
+		} else if (action.equals("join")) {
+			if (state != GameState.Title) {
+				throw new RuntimeException(
+						"Invalid state to call this function");
+			}
+			joinMultiplayer();
 		}
 	}
-	
+
 	private int port = 4608;
-	private MultiplayerComm connectMultiplayer() {
-		System.out.println("Connecting multiplayer");
-		
-		Scanner sc = new Scanner(System.in);
-		
+
+	private MultiplayerComm hostMultiplayer() {
+		System.out.println("Hosting multiplayer");
 		try {
-			if (sc.nextLine().equals("")) {
-				return MultiplayerComm.connect(port);
-			} else {
-				return MultiplayerComm.connect("172.26.3.181", port);
-			}
-		}catch(Exception ex) {
+			return MultiplayerComm.connect(port);
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private MultiplayerComm joinMultiplayer() {
+		System.out.println("Joinging multiplayer");
+		try {
+			return MultiplayerComm.connect("172.26.3.181", port);
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
