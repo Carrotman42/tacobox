@@ -15,7 +15,7 @@ public interface C {
 	
 	boolean defaultBlocked = true;
 	boolean defaultVisible = true;
-	boolean defaultMovable = false;
+	boolean defaultMoveable = false;
 	
 	// Action layer properties
 	String remoteAct = "remoteAct";
@@ -37,4 +37,6 @@ public interface C {
 	// Map properties
 	String SpawnX = "spawnX";
 	String SpawnY = "spawnY";
+	String GoalX = "goalX";
+	String GoalY = "goalY";
 }
