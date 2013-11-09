@@ -73,7 +73,15 @@ public class MapActions {
 		this.post = post;
 	}
 	
-	public void checkAction(int x, int y) {
+	public void exit(int x, int y) {
+		
+	}
+	
+	public void enter(int x, int y) {
+		
+	}
+
+	public void activate(int x, int y) {
 		// May be innefficient to constantly iterate through these. If that is true, I'll implement a map of the current
 		// objects and whatnot.
 		

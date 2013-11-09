@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
@@ -17,9 +18,9 @@ public class Player implements InputProcessor {
 
 	Sprite mSprite;
 	Vector2 mPos;
-	MapLayer mCollisionLayer;
-	MapLayer mActionLayer;
-	MapActions mActions;
+	final MapLayer mCollisionLayer;
+	final MapLayer mActionLayer;
+	final MapActions mActions;
 
 	Vector2 mVelocity;
 
@@ -27,17 +28,21 @@ public class Player implements InputProcessor {
 
 	private final float TILE_WIDTH, TILE_HEIGHT;
 
-	public Player(String spritePath, TiledMap map) {
-		this(spritePath, map, 0, 0);
+	public Player(String spritePath, TiledMap map, MapActions actions) {
+		this(spritePath, map, actions, 0, 0);
 	}
 
-	public Player(String spritePath, TiledMap map, int x,
+	public Player(String spritePath, TiledMap map, MapActions actions, int x,
 			int y) {
-		TILE_WIDTH = ((TiledMapTileLayer) map.getLayers().get(C.TileLayer))
-				.getTileWidth();
-		TILE_HEIGHT = ((TiledMapTileLayer) map.getLayers().get(C.TileLayer))
-				.getTileWidth();
+		
+		MapLayers layers = map.getLayers();
+		TiledMapTileLayer tiles = (TiledMapTileLayer) layers.get(C.TileLayer);
+		TILE_WIDTH = tiles.getTileWidth();
+		TILE_HEIGHT = tiles.getTileWidth();
 
+		mCollisionLayer = layers.get(C.ObjectLayer);
+		mActionLayer = layers.get(C.ActionLayer);
+		mActions = actions;
 		mSprite = new Sprite(new Texture(spritePath));
 		mPos = new Vector2();
 		mVelocity = new Vector2();
@@ -76,6 +81,14 @@ public class Player implements InputProcessor {
 			// TODO: check collision
 			setPosition(mPos.x, mPos.y + mVelocity.y * delta * mSpeed);
 		}
+		
+		// When the user does an activate: 
+		//   mActions.activate(x, y)
+		// When the user enters a square:
+		//   mActions.enter(x, y)
+		// When the user exists a square:
+		//   mActions.exit(x, y)
+		
 	}
 
 	public void draw(SpriteBatch spriteBatch) {

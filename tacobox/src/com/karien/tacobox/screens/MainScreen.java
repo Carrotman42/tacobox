@@ -12,11 +12,13 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.karien.taco.mapstuff.C;
+import com.karien.taco.mapstuff.MapActions;
 import com.karien.tacobox.entities.Player;
 
 public class MainScreen implements Screen {
 
 	private TiledMap map;
+	private MapActions acts;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
 
@@ -63,10 +65,12 @@ public class MainScreen implements Screen {
 	@Override
 	public void show() {
 		map = new TmxMapLoader().load("maps/lightTest.tmx");
+		acts = MapActions.procActions(map, /* TODO: */ null);
+		
 		renderer = new OrthogonalTiledMapRenderer(map);
 		camera = new OrthographicCamera();
 
-		mPlayer = new Player("player.png", map);
+		mPlayer = new Player("player.png", map, acts);
 
 		Gdx.input.setInputProcessor(mPlayer);
 	}
