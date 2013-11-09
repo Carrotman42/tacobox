@@ -9,22 +9,31 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.karien.taco.mapstuff.C;
 import com.karien.taco.mapstuff.MapActions;
+import com.karien.tacobox.GameEventListener;
 import com.karien.tacobox.entities.Player;
 
 public class MainScreen implements Screen {
 
-	private TiledMap map;
-	private MapActions acts;
+	private final TiledMap map;
+	private final MapActions acts;
+	private final GameEventListener callback;
+	
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
 
 	Player mPlayer;
 
+	
+	public MainScreen(Level lvl) {
+		this.map = lvl.map;
+		this.acts = lvl.acts;
+		this.callback = lvl.parent;
+	}
+	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -43,6 +52,11 @@ public class MainScreen implements Screen {
 		mPlayer.draw(renderer.getSpriteBatch());
 		drawObjects(C.ObjectLayer);
 		renderer.getSpriteBatch().end();
+		
+		if (mPlayer.getX() == (Integer)map.getProperties().get("goalX") && mPlayer.getY() == (Integer)map.getProperties().get("goalY")){
+			callback.goalReached();
+		}
+		
 	}
 
 	public void drawObjects(int layerID) {
@@ -65,9 +79,6 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void show() {
-		map = new TmxMapLoader().load("maps/lightTest.tmx");
-		acts = MapActions.procActions(map, /* TODO: */null);
-
 		renderer = new OrthogonalTiledMapRenderer(map);
 		camera = new OrthographicCamera();
 
