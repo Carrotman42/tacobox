@@ -222,6 +222,21 @@ public class Player implements InputProcessor {
 		case Keys.E:
 			// Action
 			mActions.activate(getX(), getY());
+			switch (mFacing) {
+			case E:
+				mActions.activate(getX() + 1, getY());
+				break;
+			case N:
+				mActions.activate(getX(), getY() + 1);
+				break;
+			case W:
+				mActions.activate(getX() - 1, getY());
+				break;
+			case S:
+			default:
+				mActions.activate(getX(), getY() - 1);
+				break;
+			}
 			break;
 		case Keys.SPACE:
 			// Toggle grab
