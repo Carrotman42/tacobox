@@ -7,6 +7,7 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.karien.tacobox.comm.MsgHandler;
 
 public class MapActions {
@@ -24,6 +25,26 @@ public class MapActions {
 	 * @return
 	 */
 	public static MapActions procActions(TiledMap map, MsgHandler remote) {
+		// Mutate the spawn/x/y/goalx/y so that (0,0) is bottom left
+		MapProperties p = map.getProperties();
+
+		String sgx = (String) p.get(C.GoalX);
+		String sgy = (String) p.get(C.GoalY);
+		String ssx = (String) p.get(C.SpawnX);
+		String ssy = (String) p.get(C.SpawnY);
+		
+		if (sgx == null || sgy == null || ssx == null || ssy == null) {
+			throw new RuntimeException("Didn't set goal/spawn correctly!");
+		}
+		
+		int height = ((TiledMapTileLayer)map.getLayers().get(C.TileLayer)).getHeight();
+
+		p.put(C.GoalX, Integer.parseInt(sgx));
+		p.put(C.GoalY, height - Integer.parseInt(sgy));
+		p.put(C.SpawnX, Integer.parseInt(ssx));
+		p.put(C.SpawnY, height - Integer.parseInt(ssy));
+		
+		// Now process the action objects
 		HashMap<String, MapObject> objects = new HashMap<String, MapObject>();
 		HashMap<Coord, MapObject> actable = new HashMap<Coord, MapObject>();
 
