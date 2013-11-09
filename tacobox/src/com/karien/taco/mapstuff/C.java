@@ -10,6 +10,7 @@ public interface C {
 	
 	boolean defaultBlocked = true;
 	boolean defaultVisible = true;
+	boolean defaultMovable = false;
 	
 	String Id = "id";
 	String remoteAct = "remoteAct";
