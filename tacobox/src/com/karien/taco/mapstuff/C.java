@@ -14,6 +14,7 @@ public interface C {
 	String Id = "id";
 	String remoteAct = "remoteAct";
 	String localAct = "localAct";
+	String action = "action";
 	
 	String Disappear = "disappear";
 	String Appear = "appear";
