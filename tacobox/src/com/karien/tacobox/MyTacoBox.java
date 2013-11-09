@@ -114,7 +114,7 @@ public class MyTacoBox extends Game {
 	private MultiplayerComm joinMultiplayer() {
 		System.out.println("Joinging multiplayer");
 		try {
-			return MultiplayerComm.connect("172.26.3.181", port);
+			return MultiplayerComm.connect("10.160.26.134", port);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}

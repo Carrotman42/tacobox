@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="32" tileheight="32">
  <properties>
-  <property name="goalX" value="11"/>
-  <property name="goalY" value="0"/>
-  <property name="spawnX" value="13"/>
-  <property name="spawnY" value="19"/>
+  <property name="goalX" value="13"/>
+  <property name="goalY" value="19"/>
+  <property name="spawnX" value="11"/>
+  <property name="spawnY" value="0"/>
  </properties>
  <tileset firstgid="1" name="tileset" tilewidth="32" tileheight="32">
   <image source="DungeonCrawl_ProjectUtumnoTileset.png" width="2048" height="1536"/>
@@ -14,7 +14,7 @@
    eJydk1EKwCAMQ4XN+59pNxv7EMowyatC0bmapd1z3mNMGM/F81bU5/87sl+/q/Scx11e2qN+d/V+g/hyva1rp7fzo/rn8qhO8urqUrPyQjhReh2WKS/UE/GX9Fw9jt3OfUk8d/5d4j315JRD4pdw0mGt0z9y10nOKX+KrW64sy9Og5Xd
   </data>
  </layer>
- <objectgroup name="action" width="20" height="20" visible="0">
+ <objectgroup name="action" width="20" height="20">
   <object gid="11" x="448" y="192">
    <properties>
     <property name="blocked" value="false"/>
@@ -68,11 +68,11 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="object" width="20" height="20" visible="0">
+ <objectgroup name="object" width="20" height="20">
   <object gid="1122" x="448" y="256">
    <properties>
     <property name="id" value="10"/>
-    <property name="movable" value="true"/>
+    <property name="moveable" value="true"/>
    </properties>
   </object>
   <object gid="1122" x="32" y="128">

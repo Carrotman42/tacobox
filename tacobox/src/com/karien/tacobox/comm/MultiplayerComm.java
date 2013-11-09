@@ -94,6 +94,8 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 			if (first == ':') {
 				// ActionMessage:
 				msg = new Msg(ActionMessage.fromString(line.substring(1)), null);
+			} else if (first == '#') {
+				msg = new Msg(null, null);
 			} else {
 				msg = new Msg(null, MapID.valueOf(line));
 			}
@@ -151,6 +153,16 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 			}
 			last = next;
 			write(next.toString());
+			
+			do {
+				try {
+					Msg msg = inActs.take();
+					if (msg.newMap == null) {
+						break;
+					}
+				} catch (InterruptedException e) {}
+			}while (true);
+			
 			return next.getPath(true);
 		} else {
 			do {
@@ -170,7 +182,7 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 					System.out.println("Got map: " + msg);
 					return msg.newMap.getPath(false);
 				}
-
+				write("#");
 			} while (true);
 		}
 	}
