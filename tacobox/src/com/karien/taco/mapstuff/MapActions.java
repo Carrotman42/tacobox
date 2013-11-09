@@ -1,6 +1,7 @@
 package com.karien.taco.mapstuff;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.badlogic.gdx.maps.MapLayer;
@@ -66,7 +67,7 @@ public class MapActions {
 
 			if (hadAny) {
 				actable.put(c, o);
-				//System.out.println("Got action on obj at " + c);
+				System.out.println("Got action on obj at " + c);
 			}
 			
 			Object id = props.get(C.Id);
@@ -85,7 +86,19 @@ public class MapActions {
 			if (id != null) {
 				objects.put((String) id, o);
 			}
+			
+			Coord c = new Coord(((Integer) props.get("x"))/tileSize, ((Integer) props.get("y"))/tileSize);
+			//System.out.println("Got action obj at " + c);
+			boolean hadAny = makeAction(props, C.onExit)
+					| // Note: Can't do the short-circuiting || operator!
+					makeAction(props, C.onActivate)
+					| makeAction(props, C.onEnter);
 
+			if (hadAny) {
+				actable.put(c, o);
+				System.out.println("Got action on obj at " + c);
+			}
+			
 			setDefaults(props);
 		}
 
@@ -113,20 +126,19 @@ public class MapActions {
 
 	private void doCheck(int x, int y, String actStr) {
 		MapObject obj = actable.get(new Coord(x, y));
-		if (actStr.equals(C.onActivate)) {
-			System.out.println("Act " + new Coord(x, y) + " got obj " + obj);
-		}
 		if (obj == null) {
 			return;
 		}
 
 		MapProperties props = obj.getProperties();
 		if (!(Boolean)props.get(C.Visible)) {
+			System.out.println("Ignoring because invisible!");
 			return;
 		}
-		
+
 		ActionAction[] acts = (ActionAction[]) props.get(actStr);
 		if (acts != null) {
+			System.out.println("At " + new Coord(x, y) + " there was a " + actStr + " event: " + Arrays.toString(acts));
 			for (ActionAction act : acts) {
 				if (act.remote) {
 					sendRemoteMsg(act.targetId, act.act);
