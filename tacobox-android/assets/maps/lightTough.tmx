@@ -41,7 +41,7 @@
    <properties>
     <property name="blocked" value="false"/>
     <property name="id" value="9"/>
-    <property name="onActivate" value="l33.disappear"/>
+    <property name="onActivate" value="l33:disappear"/>
    </properties>
   </object>
   <object gid="1766" x="384" y="608">
