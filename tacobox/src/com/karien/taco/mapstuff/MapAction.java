@@ -9,7 +9,7 @@ public enum MapAction {
 		void doit(MapObject obj) {
 			obj.getProperties().put(C.Visible, true);
 		}
-	}, disapear {
+	}, disappear {
 		@Override
 		void doit(MapObject obj) {
 			obj.getProperties().put(C.Visible, false);
@@ -28,7 +28,7 @@ public enum MapAction {
 		if (str.equals(C.Appear)) {
 			return appear;
 		} if (str.equals(C.Disappear)) {
-			return disapear;
+			return disappear;
 		} if (str.equals(C.Toggle)) {
 			return toggle;
 		}
