@@ -10,4 +10,12 @@ public interface C {
 	
 	boolean defaultBlocked = true;
 	boolean defaultVisible = true;
+	
+	String Id = "id";
+	String remoteAct = "remoteAct";
+	String localAct = "localAct";
+	
+	String Disappear = "disappear";
+	String Appear = "appear";
+	String Toggle = "toggle";
 }
