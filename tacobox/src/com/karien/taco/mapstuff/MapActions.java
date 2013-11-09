@@ -2,7 +2,6 @@ package com.karien.taco.mapstuff;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
@@ -12,9 +11,8 @@ import com.karien.tacobox.comm.MsgHandler;
 
 
 public class MapActions {
-	private final HashMap<MapObject, Integer> remoteActs;
-	private final HashMap<MapObject, Integer> localActs;
-	private final HashMap<Integer, MapObject> actions;
+	private final HashMap<String, MapObject> objects;
+	private final HashMap<Coord, MapObject> actable;
 	
 	private final MsgHandler post;
 	/**
@@ -24,22 +22,28 @@ public class MapActions {
 	 * @return
 	 */
 	public static MapActions procActions(TiledMap map, MsgHandler remote) {
-		HashMap<MapObject, Integer> remoteActs = new HashMap<MapObject, Integer>();
-		HashMap<MapObject, Integer> localActs = new HashMap<MapObject, Integer>();
-		HashMap<Integer, MapObject> actions = new HashMap<Integer, MapObject>();
+		HashMap<String, MapObject> objects = new HashMap<String, MapObject>();
+		HashMap<Coord, MapObject> actable = new HashMap<Coord, MapObject>();
 		
 		TiledMapTileLayer l = (TiledMapTileLayer)map.getLayers().get(C.ActionLayer);
 		for (MapObject o : l.getObjects()) {
 			MapProperties props = o.getProperties();
+
+			boolean hadAny = 
+					makeAction(props, C.onExit) | // Note: Can't do the short-circuiting || operator!
+					makeAction(props, C.onActivate) |
+					makeAction(props, C.onEnter);
 			
-			String act = (String)props.get(C.remoteAct);
-			if (act != null) {
-				remoteActs.put(o, Integer.parseInt(act));
-			}
 			
-			act = (String)props.get(C.localAct);
-			if (act != null) {
-				localActs.put(o, Integer.parseInt(act));
+			if (hadAny) {
+				Object rem = props.get(C.remoteAct);
+				Object local = props.get(C.localAct);
+				
+				if (rem == null && local == null) {
+					throw new RuntimeException("Object at (" + props.get("x") + ", " + props.get("y") + ") had actions assigned to it but no target for those actions!");
+				}
+				
+				actable.put(new Coord((Integer)props.get("x"), (Integer)props.get("y")), o);
 			}
 			
 			setDefaults(props);
@@ -49,87 +53,63 @@ public class MapActions {
 		for (MapObject o : l.getObjects()) {
 			MapProperties props = o.getProperties();
 			
-			String id = (String)props.get(C.Id);
+			Object id = props.get(C.Id);
 			if (id != null) {
-				String action = (String)props.get(C.action);
-				if (action != null) {
-					props.put(C.action, MapAction.getAction(action));
-					actions.put(Integer.parseInt(id), o);
-				} else {
-					System.out.println("Warning: found object with id without action. id=" + id);
-				}
+				objects.put((String)id, o);
 			}
 			
 			setDefaults(props);
 		}
 		
-		return new MapActions(remoteActs, localActs, actions, remote);
+		return new MapActions(objects, actable, remote);
 	}
 	
-	private MapActions(HashMap<MapObject, Integer> remote, HashMap<MapObject, Integer> local, HashMap<Integer, MapObject> actions, MsgHandler post) {
-		this.remoteActs = remote;
-		this.localActs = local;
-		this.actions = actions;
+	private MapActions(HashMap<String, MapObject> objects, HashMap<Coord, MapObject> actable, MsgHandler post) {
+		this.objects = objects;
+		this.actable = actable;
 		this.post = post;
 	}
 	
 	public void exit(int x, int y) {
-		
+		doCheck(x, y, C.onExit);
 	}
 	
 	public void enter(int x, int y) {
-		
+		doCheck(x, y, C.onEnter);
 	}
-
+	
 	public void activate(int x, int y) {
-		// May be innefficient to constantly iterate through these. If that is true, I'll implement a map of the current
-		// objects and whatnot.
-		
-		for (Map.Entry<MapObject, Integer> o : remoteActs.entrySet()) {
-			MapProperties p = o.getKey().getProperties();
-			int nx = p.get("x", int.class);
-			int ny = p.get("y", int.class);
-			if (x == nx && y == ny) {
-				sendRemoteMsg(o.getValue());
-				return;
-			}
+		doCheck(x, y, C.onActivate);
+	}
+	
+	private void doCheck(int x, int y, String actStr) {
+		MapObject obj = actable.get(new Coord(x, y));
+		if (obj == null) {
+			return;
 		}
 		
-
-		for (Map.Entry<MapObject, Integer> o : localActs.entrySet()) {
-			MapProperties p = o.getKey().getProperties();
-			int nx = p.get("x", int.class);
-			int ny = p.get("y", int.class);
-			if (x == nx && y == ny) {
-				procAction(o.getValue());
-				return;
+		MapProperties props = obj.getProperties();
+		MapAction act = (MapAction)props.get(actStr);
+		if (act != null) {
+			Object dest = props.get(C.remoteAct);
+			if (dest != null) {
+				sendRemoteMsg(dest.toString(), act);
+			} else {
+				act.doit(obj);
 			}
 		}
 	}
 	
-	private void sendRemoteMsg(Integer msg) {
+	private void sendRemoteMsg(String id, MapAction act) {
 		if (post == null) {
-			System.out.println("Ignored remote message: " + msg);
+			System.out.println("Ignored remote message: " + id + ", " + act);
 		} else {
 			try {
-				post.postMessage(ActionMessage.fromString(msg.toString()));
+				post.postMessage(new ActionMessage(id, act));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
-	}
-	
-	private void procAction(Integer id) {
-		MapObject ob = actions.get(id);
-		if (ob == null) {
-			throw new RuntimeException("Got id " + id + " as an action but didn't see an object mapping to that id");
-		}
-		MapAction action = (MapAction)ob.getProperties().get(C.action);
-		if (action == null) {
-			throw new RuntimeException("Got id " + id + " as an action. I found that object but didn't find an action on it");
-		}
-		
-		action.doit(ob);
 	}
 	
 	public void checkRemoteMessage() {
@@ -142,7 +122,7 @@ public class MapActions {
 			return;
 		}
 		
-		procAction(msg.id);
+		msg.act.doit(objects.get(msg.id));
 	}
 	
 	private static void setDefaults(MapProperties p) {
@@ -156,6 +136,17 @@ public class MapActions {
 			def = Boolean.parseBoolean(str);
 		}
 		p.put(name, def);
+	}
+	
+	private static boolean makeAction(MapProperties props, String propName) {
+		Object pp = props.get(propName);
+		if (pp == null) {
+			return false;
+		}
+		
+		props.put(propName, MapAction.getAction((String)pp));
+		
+		return true;
 	}
 }
 

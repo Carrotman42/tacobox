@@ -5,13 +5,20 @@ package com.karien.taco.mapstuff;
  *
  */
 public class ActionMessage {
-	public final Integer id;
-	
-	public ActionMessage(Integer id) {
-		this.id = id;
-	}
+	public final String id;
+	public final MapAction act;
 
-	public static ActionMessage fromString(String line) {
-		return new ActionMessage(Integer.parseInt(line));
+	public ActionMessage(String id, MapAction act) {
+		this.id = id;
+		this.act = act;
+	}
+	
+	public static ActionMessage fromString(String str) {
+		int sep = str.indexOf('|');
+		return new ActionMessage(str.substring(0, sep), MapAction.valueOf(str.substring(sep+1)));
+	}
+	
+	public String toString() {
+		return id + "|" + act;
 	}
 }
