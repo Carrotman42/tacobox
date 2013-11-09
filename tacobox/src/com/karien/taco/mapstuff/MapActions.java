@@ -138,7 +138,7 @@ public class MapActions {
 	}
 	
 	private static void setDefaults(MapProperties p) {
-		setBoolDefault(p, C.Visisble, C.defaultVisible);
+		setBoolDefault(p, C.Visible, C.defaultVisible);
 		setBoolDefault(p, C.Blocked, C.defaultBlocked);
 	}
 	

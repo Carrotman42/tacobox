@@ -7,18 +7,18 @@ public enum MapAction {
 	Appear {
 		@Override
 		void doit(MapObject obj) {
-			obj.getProperties().put(C.Visisble, true);
+			obj.getProperties().put(C.Visible, true);
 		}
 	}, Disapear {
 		@Override
 		void doit(MapObject obj) {
-			obj.getProperties().put(C.Visisble, false);
+			obj.getProperties().put(C.Visible, false);
 		}
 	}, Toggle {
 		@Override
 		void doit(MapObject obj) {
 			MapProperties p = obj.getProperties();
-			p.put(C.Visisble, p.get(C.Visisble, boolean.class));
+			p.put(C.Visible, p.get(C.Visible, boolean.class));
 		}
 	};
 	
