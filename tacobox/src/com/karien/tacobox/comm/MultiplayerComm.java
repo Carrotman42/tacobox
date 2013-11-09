@@ -7,14 +7,17 @@ import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import com.karien.taco.mapstuff.ActionMessage;
+import com.karien.taco.mapstuff.map.MapID;
 
 public class MultiplayerComm implements Runnable, MsgHandler {
 	private final Socket sock;
-
-	private ArrayBlockingQueue<ActionMessage> inActs = new ArrayBlockingQueue<ActionMessage>(5);
+	private final boolean master;
 	
-	public MultiplayerComm(Socket s) {
+	private ArrayBlockingQueue<Msg> inActs = new ArrayBlockingQueue<Msg>(5);
+	
+	public MultiplayerComm(Socket s, boolean master) {
 		sock = s;
+		this.master = master;
 		
 		new Thread(this).start();
 	}
@@ -24,7 +27,14 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 	 * @return The coordinate send from the partner or null if there was none to read.
 	 */
 	public ActionMessage recvAction() {
-		return inActs.poll();
+		Msg msg = inActs.peek();
+		if (msg == null) {
+			return null;
+		}else if (msg.msg != null) {
+			return inActs.poll().msg;
+		}
+		// Else it's a sync or map choice
+		return null;
 	}
 	
 	public static MultiplayerComm connect(int port) throws IOException {
@@ -45,7 +55,7 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 			}
 		}
 		
-		return new MultiplayerComm(sock);
+		return new MultiplayerComm(sock, true);
 	}
 
 	public static MultiplayerComm connect(String addr, int port) throws IOException {
@@ -61,7 +71,7 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 			}
 		}
 		
-		return new MultiplayerComm(s);
+		return new MultiplayerComm(s, false);
 	}
 
 	@SuppressWarnings("resource")
@@ -76,7 +86,14 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 		while (true) {
 			String line = sc.nextLine();
 			
-			ActionMessage msg = ActionMessage.fromString(line);
+			char first = line.charAt(0);
+			Msg msg;
+			if (first == ':') {
+				// ActionMessage:
+				msg = new Msg(ActionMessage.fromString(line.substring(1)), null);
+			} else {
+				msg = new Msg(null, MapID.valueOf(line));
+			}
 
 			// We want an exception on full because something's wrong in that case.
 			inActs.add(msg);
@@ -87,6 +104,72 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 	public void postMessage(ActionMessage msg) throws IOException {
 		// TODO: Check that this won't block so that we don't block the gui thread
 		
-		sock.getOutputStream().write(msg.toString().getBytes());
+		write(":" + msg.toString());
+	}
+	
+	/**
+	 * You can tell that we're getting down to the wire in the hackathon
+	 *
+	 */
+	private static class Msg {
+		final ActionMessage msg;
+		final MapID newMap;
+		
+		Msg(ActionMessage msg, MapID newMap) {
+			this.msg = msg;
+			this.newMap = newMap;
+		}
+	}
+
+	private MapID last;
+	@Override
+	public String syncAndGetMapPath() throws IOException {
+		if (master) {
+			MapID next = null;
+			switch (last) {
+			default:
+				next = MapID.Test;
+				break;
+			case Test:
+				next = MapID.Normal;
+				break;
+			case Normal:
+				next = MapID.Hard;
+				break;
+			case Hard:
+				next = MapID.End;
+				break;
+			}
+			last = next;
+			write(next.toString());
+			return next.getPath(true);
+		} else {
+			do {
+				Msg msg;
+				try {
+					msg = inActs.take();
+				}catch(InterruptedException ex) {
+					System.out.println("Ignored interrupted: " + ex);
+					continue;
+				}
+				
+				if (msg.msg != null) {
+					System.out.println("Consumed unused map action: " + msg.msg);
+				} else {
+					last = msg.newMap;
+					return msg.newMap.getPath(false);
+				}
+				
+			} while(true);
+		}
+	}
+	
+	private void write(String s) throws IOException {
+		sock.getOutputStream().write((s + "\n").getBytes());
 	}
 }
+
+
+
+
+

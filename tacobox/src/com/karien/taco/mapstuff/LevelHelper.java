@@ -1,5 +1,8 @@
 package com.karien.taco.mapstuff;
 
+import java.io.IOException;
+
+import com.karien.taco.mapstuff.map.MapID;
 import com.karien.tacobox.MyTacoBox;
 import com.karien.tacobox.comm.MsgHandler;
 import com.karien.tacobox.screens.Level;
@@ -19,8 +22,20 @@ public class LevelHelper {
 			throw new RuntimeException("Already loading a level!");
 		}
 		loading = true;
-		new lvlLoader("maps/lightTest.tmx").run();
+		new lvlLoader(nextMapPath()).run();
 		//new Thread(new lvlLoader("maps/lightTest.tmx")).start();
+	}
+	
+	private String nextMapPath() {
+		if (msg == null) {
+			return MapID.Test.getPath(true);
+		}
+		
+		try {
+			return msg.syncAndGetMapPath();
+		}catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	public synchronized boolean isLevelLoaded() {
