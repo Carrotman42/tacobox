@@ -51,8 +51,8 @@
    <properties>
     <property name="blocked" value="false"/>
     <property name="id" value="31"/>
+    <property name="onEnd" value="toggle"/>
     <property name="onEnter" value="l32:disappear"/>
-    <property name="onExit" value="l32:toggle"/>
    </properties>
   </object>
   <object gid="3083" x="32" y="64">
@@ -60,7 +60,7 @@
     <property name="blocked" value="false"/>
     <property name="id" value="16"/>
     <property name="onEnter" value="l32:disappear"/>
-    <property name="onExit" value="l32:toggle"/>
+    <property name="onExit" value="toggle"/>
    </properties>
   </object>
  </objectgroup>
