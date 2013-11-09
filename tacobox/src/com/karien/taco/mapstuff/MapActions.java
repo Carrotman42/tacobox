@@ -113,12 +113,10 @@ public class MapActions {
 
 	private void doCheck(int x, int y, String actStr) {
 		MapObject obj = actable.get(new Coord(x, y));
-		if (actStr.equals(C.onActivate)) {
-			System.out.println("Act " + new Coord(x, y) + " got obj " + obj);
-		}
 		if (obj == null) {
 			return;
 		}
+		System.out.println("Act " + new Coord(x, y) + " got obj " + obj);
 
 		MapProperties props = obj.getProperties();
 		if (!(Boolean)props.get(C.Visible)) {
