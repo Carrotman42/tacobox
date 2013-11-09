@@ -6,7 +6,7 @@ package com.karien.taco.mapstuff;
  */
 public interface C {
 	String Blocked = "blocked";
-	String Visisble = "visible";
+	String Visible = "visible";
 	
 	boolean defaultBlocked = true;
 	boolean defaultVisible = true;
@@ -18,9 +18,10 @@ public interface C {
 	String Disappear = "disappear";
 	String Appear = "appear";
 	String Toggle = "toggle";
+	String Moveable = "moveable";
 	
 	// Layers
 	int TileLayer = 0;
-	int ActionLayer = 1;
-	int ObjectLayer = 2;
+	int ActionLayer = 2;
+	int ObjectLayer = 1;
 }
