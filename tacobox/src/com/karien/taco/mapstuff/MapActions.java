@@ -37,7 +37,12 @@ public class MapActions {
 			throw new RuntimeException("Didn't set goal/spawn correctly!");
 		}
 		
-		int height = ((TiledMapTileLayer)map.getLayers().get(C.TileLayer)).getHeight();
+		TiledMapTileLayer tilelay = ((TiledMapTileLayer)map.getLayers().get(C.TileLayer));
+		int height = tilelay.getHeight();
+		int tileSize = (int)tilelay.getTileHeight();
+		if (tileSize != (int)tilelay.getTileWidth()) {
+			throw new RuntimeException("I assumed they were squares, but they aren't anymore!");
+		}
 
 		p.put(C.GoalX, Integer.parseInt(sgx));
 		p.put(C.GoalY, height - Integer.parseInt(sgy));
@@ -52,15 +57,16 @@ public class MapActions {
 		for (MapObject o : l.getObjects()) {
 			MapProperties props = o.getProperties();
 
+			Coord c = new Coord(((Integer) props.get("x"))/tileSize, ((Integer) props.get("y"))/tileSize);
+			//System.out.println("Got action obj at " + c);
 			boolean hadAny = makeAction(props, C.onExit)
 					| // Note: Can't do the short-circuiting || operator!
 					makeAction(props, C.onActivate)
 					| makeAction(props, C.onEnter);
 
 			if (hadAny) {
-				actable.put(
-						new Coord((Integer) props.get("x"), (Integer) props
-								.get("y")), o);
+				actable.put(c, o);
+				//System.out.println("Got action on obj at " + c);
 			}
 			
 			Object id = props.get(C.Id);
@@ -107,6 +113,9 @@ public class MapActions {
 
 	private void doCheck(int x, int y, String actStr) {
 		MapObject obj = actable.get(new Coord(x, y));
+		if (actStr.equals(C.onActivate)) {
+			System.out.println("Act " + new Coord(x, y) + " got obj " + obj);
+		}
 		if (obj == null) {
 			return;
 		}
@@ -115,7 +124,6 @@ public class MapActions {
 		if (!(Boolean)props.get(C.Visible)) {
 			return;
 		}
-		
 		
 		ActionAction act = (ActionAction) props.get(actStr);
 		if (act != null) {
