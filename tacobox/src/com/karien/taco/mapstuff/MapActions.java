@@ -1,6 +1,7 @@
 package com.karien.taco.mapstuff;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.badlogic.gdx.maps.MapLayer;
@@ -116,15 +117,16 @@ public class MapActions {
 		if (obj == null) {
 			return;
 		}
-		System.out.println("Act " + new Coord(x, y) + " got obj " + obj);
 
 		MapProperties props = obj.getProperties();
 		if (!(Boolean)props.get(C.Visible)) {
+			System.out.println("Ignoring because invisible!");
 			return;
 		}
-		
+
 		ActionAction[] acts = (ActionAction[]) props.get(actStr);
 		if (acts != null) {
+			System.out.println("At " + new Coord(x, y) + " there was a " + actStr + " event: " + Arrays.toString(acts));
 			for (ActionAction act : acts) {
 				if (act.remote) {
 					sendRemoteMsg(act.targetId, act.act);

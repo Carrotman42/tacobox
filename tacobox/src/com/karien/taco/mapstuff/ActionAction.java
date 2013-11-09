@@ -10,4 +10,8 @@ public class ActionAction {
 		this.targetId = targetId;
 		this.act = act;
 	}
+	
+	public String toString() {
+		return "remote=" + remote + ", target=" + targetId + ", action=" + act;
+	}
 }
