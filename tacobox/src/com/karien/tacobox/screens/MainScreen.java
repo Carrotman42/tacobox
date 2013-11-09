@@ -29,8 +29,8 @@ public class MainScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		camera.position.lerp(new Vector3(mPlayer.getX(), mPlayer.getY(), 0),
-				0.5f);
+		camera.position.lerp(new Vector3(mPlayer.getX() * mPlayer.TILE_WIDTH,
+				mPlayer.getY() * mPlayer.TILE_HEIGHT, 0), 0.5f);
 		camera.update();
 
 		renderer.setView(camera);
@@ -65,8 +65,8 @@ public class MainScreen implements Screen {
 	@Override
 	public void show() {
 		map = new TmxMapLoader().load("maps/lightTest.tmx");
-		acts = MapActions.procActions(map, /* TODO: */ null);
-		
+		acts = MapActions.procActions(map, /* TODO: */null);
+
 		renderer = new OrthogonalTiledMapRenderer(map);
 		camera = new OrthographicCamera();
 
