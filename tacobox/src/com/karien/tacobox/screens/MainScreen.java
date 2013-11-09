@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -38,22 +39,22 @@ public class MainScreen implements Screen {
 		renderer.getSpriteBatch().begin();
 		renderer.renderTileLayer((TiledMapTileLayer) map.getLayers().get(
 				C.TileLayer));
-		for (MapObject obj : map.getLayers().get(C.ActionLayer).getObjects()) {
-			int gid = (Integer) obj.getProperties().get("gid");
-			TiledMapTile tile = map.getTileSets().getTile(gid);
-			renderer.getSpriteBatch().draw(tile.getTextureRegion(),
-					(Integer) obj.getProperties().get("x"),
-					(Integer) obj.getProperties().get("y"));
-		}
+		drawObjects(C.ActionLayer);
 		mPlayer.draw(renderer.getSpriteBatch());
-		for (MapObject obj : map.getLayers().get(C.ObjectLayer).getObjects()) {
-			int gid = (Integer) obj.getProperties().get("gid");
-			TiledMapTile tile = map.getTileSets().getTile(gid);
-			renderer.getSpriteBatch().draw(tile.getTextureRegion(),
-					(Integer) obj.getProperties().get("x"),
-					(Integer) obj.getProperties().get("y"));
-		}
+		drawObjects(C.ObjectLayer);
 		renderer.getSpriteBatch().end();
+	}
+
+	public void drawObjects(int layerID) {
+		for (MapObject obj : map.getLayers().get(layerID).getObjects()) {
+			MapProperties props = obj.getProperties();
+			if ((Boolean) props.get(C.Visible)) {
+				int gid = (Integer) props.get("gid");
+				TiledMapTile tile = map.getTileSets().getTile(gid);
+				renderer.getSpriteBatch().draw(tile.getTextureRegion(),
+						(Integer) props.get("x"), (Integer) props.get("y"));
+			}
+		}
 	}
 
 	@Override
@@ -70,7 +71,12 @@ public class MainScreen implements Screen {
 		renderer = new OrthogonalTiledMapRenderer(map);
 		camera = new OrthographicCamera();
 
-		mPlayer = new Player("player.png", map, acts);
+		mPlayer = new Player("player.png", map, acts, (Integer) map
+				.getProperties().get(C.SpawnX), (Integer) map.getProperties()
+				.get(C.SpawnY));
+
+		camera.position.set(mPlayer.getX() * mPlayer.TILE_WIDTH, mPlayer.getY()
+				* mPlayer.TILE_HEIGHT, 0);
 
 		Gdx.input.setInputProcessor(mPlayer);
 	}

@@ -21,12 +21,11 @@ public class Player implements InputProcessor {
 	Sprite mSprite;
 	Vector2 mPos;
 	final MapLayer mCollisionLayer;
-	final MapLayer mActionLayer;
 	final MapActions mActions;
 
 	Vector2 mVelocity;
 
-	float mSpeed = 2f;
+	float mSpeed = 4f;
 
 	public final float TILE_WIDTH, TILE_HEIGHT;
 
@@ -43,7 +42,6 @@ public class Player implements InputProcessor {
 		TILE_HEIGHT = tiles.getTileWidth();
 
 		mCollisionLayer = layers.get(C.ObjectLayer);
-		mActionLayer = layers.get(C.ActionLayer);
 		mActions = actions;
 		mSprite = new Sprite(new Texture(spritePath));
 		mPos = new Vector2();
@@ -118,8 +116,8 @@ public class Player implements InputProcessor {
 			}
 
 			// Move obj
-			obj.getProperties().put("x", obj2X);
-			obj.getProperties().put("y", obj2Y);
+			obj.getProperties().put("x", (int) (obj2X * TILE_WIDTH));
+			obj.getProperties().put("y", (int) (obj2Y * TILE_HEIGHT));
 			// Do exit/enter
 			mActions.exit(tileX, tileY);
 			mActions.enter(obj2X, obj2Y);
@@ -201,6 +199,9 @@ public class Player implements InputProcessor {
 		case Keys.RIGHT:
 			// Move right
 			mVelocity.x = 1;
+			break;
+		case Keys.SPACE:
+			mActions.activate(getX(), getY());
 			break;
 		}
 		return true;
