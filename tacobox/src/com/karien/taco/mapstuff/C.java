@@ -5,27 +5,36 @@ package com.karien.taco.mapstuff;
  *
  */
 public interface C {
+	// Common
+	String Id = "id";
+	
+	// Object properties
 	String Blocked = "blocked";
 	String Visible = "visible";
+	String Moveable = "moveable";
 	
 	boolean defaultBlocked = true;
 	boolean defaultVisible = true;
 	boolean defaultMovable = false;
 	
-	String Id = "id";
+	// Action layer properties
 	String remoteAct = "remoteAct";
 	String localAct = "localAct";
 	String onExit = "onExit";
 	String onActivate = "onActivate";
-	String onEnter = "onActivate";
+	String onEnter = "onEnter";
 	
+	// Actions (for onExit/onActivate/onEnter)
 	String Disappear = "disappear";
 	String Appear = "appear";
 	String Toggle = "toggle";
-	String Moveable = "moveable";
 	
 	// Layers
 	int TileLayer = 0;
 	int ActionLayer = 2;
 	int ObjectLayer = 1;
+	
+	// Map properties
+	String SpawnX = "spawnX";
+	String SpawnY = "spawnY";
 }
