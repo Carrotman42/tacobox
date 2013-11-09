@@ -25,6 +25,14 @@ public class Player implements InputProcessor {
 
 	Vector2 mVelocity;
 
+	MapObject mGrabbedObj;
+
+	public static enum EFacing {
+		N, S, E, W
+	};
+
+	EFacing mFacing;
+
 	float mSpeed = 4f;
 
 	public final float TILE_WIDTH, TILE_HEIGHT;
@@ -43,10 +51,14 @@ public class Player implements InputProcessor {
 
 		mCollisionLayer = layers.get(C.ObjectLayer);
 		mActions = actions;
+
 		mSprite = new Sprite(new Texture(spritePath));
 		mPos = new Vector2();
 		mVelocity = new Vector2();
+		mFacing = EFacing.S;
 		setPosition(x, y);
+
+		mGrabbedObj = null;
 	}
 
 	public void setPosition(float x, float y) {
@@ -107,8 +119,8 @@ public class Player implements InputProcessor {
 			if (!moveable)
 				return false;
 			// See if object can be moved
-			int obj2X = getX() + 2 * (tileX - getX());
-			int obj2Y = getY() + 2 * (tileY - getY());
+			int obj2X = getX() + 2 * (int) mVelocity.x;
+			int obj2Y = getY() + 2 * (int) mVelocity.y;
 			MapObject obj2 = findObj(obj2X, obj2Y);
 			if (obj2 != null && isBlocking(obj2)) {
 				// Can't move obj
@@ -159,12 +171,22 @@ public class Player implements InputProcessor {
 			}
 		}
 
-		// When the user does an activate:
-		// mActions.activate(x, y)
-		// When the user enters a square:
-		// mActions.enter(x, y)
-		// When the user exists a square:
-		// mActions.exit(x, y)
+		// Update image based on Facing
+		switch (mFacing) {
+		case E:
+			mSprite.setRotation(90);
+			break;
+		case N:
+			mSprite.setRotation(180);
+			break;
+		case W:
+			mSprite.setRotation(270);
+			break;
+		case S:
+		default:
+			mSprite.setRotation(0);
+			break;
+		}
 
 	}
 
@@ -184,23 +206,27 @@ public class Player implements InputProcessor {
 		case Keys.UP:
 			// Move up
 			mVelocity.y = 1;
+			mFacing = EFacing.N;
 			break;
 		case Keys.A:
 		case Keys.LEFT:
 			// Move left
 			mVelocity.x = -1;
+			mFacing = EFacing.W;
 			break;
 		case Keys.S:
 		case Keys.DOWN:
 			// Move down
 			mVelocity.y = -1;
+			mFacing = EFacing.S;
 			break;
 		case Keys.D:
 		case Keys.RIGHT:
 			// Move right
 			mVelocity.x = 1;
+			mFacing = EFacing.E;
 			break;
-		case Keys.SPACE:
+		case Keys.E:
 			mActions.activate(getX(), getY());
 			break;
 		}
