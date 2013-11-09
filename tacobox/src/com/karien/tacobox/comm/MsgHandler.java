@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.karien.taco.mapstuff.ActionMessage;
 
-public interface MsgPoster {
+public interface MsgHandler {
 	void postMessage(ActionMessage msg) throws IOException;
+	ActionMessage recvAction();
 }

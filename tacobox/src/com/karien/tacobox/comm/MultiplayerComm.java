@@ -8,7 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import com.karien.taco.mapstuff.ActionMessage;
 
-public class MultiplayerComm implements Runnable, MsgPoster {
+public class MultiplayerComm implements Runnable, MsgHandler {
 	private final Socket sock;
 
 	private ArrayBlockingQueue<ActionMessage> inActs = new ArrayBlockingQueue<ActionMessage>(5);
