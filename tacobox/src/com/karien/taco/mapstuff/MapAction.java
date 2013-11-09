@@ -4,17 +4,17 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 
 public enum MapAction {
-	Appear {
+	appear {
 		@Override
 		void doit(MapObject obj) {
 			obj.getProperties().put(C.Visible, true);
 		}
-	}, Disapear {
+	}, disapear {
 		@Override
 		void doit(MapObject obj) {
 			obj.getProperties().put(C.Visible, false);
 		}
-	}, Toggle {
+	}, toggle {
 		@Override
 		void doit(MapObject obj) {
 			MapProperties p = obj.getProperties();
@@ -26,11 +26,11 @@ public enum MapAction {
 	
 	static MapAction getAction(String str) {
 		if (str.equals(C.Appear)) {
-			return Appear;
+			return appear;
 		} if (str.equals(C.Disappear)) {
-			return Disapear;
+			return disapear;
 		} if (str.equals(C.Toggle)) {
-			return Toggle;
+			return toggle;
 		}
 		throw new RuntimeException("Unknown action: " + str);
 	}
