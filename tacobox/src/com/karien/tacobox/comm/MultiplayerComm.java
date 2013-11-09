@@ -6,12 +6,12 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import com.karien.taco.mapstuff.Coord;
+import com.karien.taco.mapstuff.ActionMessage;
 
-public class MultiplayerComm implements Runnable {
+public class MultiplayerComm implements Runnable, MsgPoster {
 	private final Socket sock;
-	
-	private ArrayBlockingQueue<Coord> inActs = new ArrayBlockingQueue<Coord>(5);
+
+	private ArrayBlockingQueue<ActionMessage> inActs = new ArrayBlockingQueue<ActionMessage>(5);
 	
 	public MultiplayerComm(Socket s) {
 		sock = s;
@@ -23,7 +23,7 @@ public class MultiplayerComm implements Runnable {
 	 * Call this in some tick loop to see if an action from the other player.
 	 * @return The coordinate send from the partner or null if there was none to read.
 	 */
-	public Coord recvAction() {
+	public ActionMessage recvAction() {
 		return inActs.poll();
 	}
 	
@@ -76,23 +76,17 @@ public class MultiplayerComm implements Runnable {
 		while (true) {
 			String line = sc.nextLine();
 			
-			int comma = line.indexOf(',');
-			if (comma == -1) {
-				throw new RuntimeException("Bad line recv: " + line);
-			}
-			Coord c;
-			try {
-				c = new Coord(
-						Integer.parseInt(line.substring(0, comma).trim()), 
-						Integer.parseInt(line.substring(comma+1).trim())
-				);
-			}catch (NumberFormatException x) {
-				throw new RuntimeException("Invalid line format (bad integer): " + line);
-			}
-			
-			
+			ActionMessage msg = ActionMessage.fromString(line);
+
 			// We want an exception on full because something's wrong in that case.
-			inActs.add(c);
+			inActs.add(msg);
 		}
+	}
+
+	@Override
+	public void postMessage(ActionMessage msg) throws IOException {
+		// TODO: Check that this won't block so that we don't block the gui thread
+		
+		sock.getOutputStream().write(msg.toString().getBytes());
 	}
 }
