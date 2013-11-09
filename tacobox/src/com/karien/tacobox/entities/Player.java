@@ -52,7 +52,6 @@ public class Player implements InputProcessor {
 	}
 
 	public void setPosition(float x, float y) {
-		System.out.println("(" + x + ", " + y + ")");
 		mPos.set(x, y);
 		mSprite.setPosition((int) x * TILE_WIDTH, (int) y * TILE_HEIGHT);
 	}
@@ -87,7 +86,8 @@ public class Player implements InputProcessor {
 		MapObject obj = null;
 		for (MapObject object : mCollisionLayer.getObjects()) {
 			MapProperties props = object.getProperties();
-			if ((Integer) props.get("x") == x && (Integer) props.get("y") == y) {
+			if ((Integer) props.get("x") / TILE_WIDTH == x
+					&& (Integer) props.get("y") / TILE_HEIGHT == y) {
 				obj = object;
 				break;
 			}
