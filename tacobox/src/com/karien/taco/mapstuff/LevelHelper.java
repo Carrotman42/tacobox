@@ -1,12 +1,12 @@
 package com.karien.taco.mapstuff;
 
-import com.karien.tacobox.GameEventListener;
+import com.karien.tacobox.MyTacoBox;
 import com.karien.tacobox.comm.MsgHandler;
 import com.karien.tacobox.screens.Level;
 
 public class LevelHelper {
 	private final MsgHandler msg;
-	private final GameEventListener listen;
+	private final MyTacoBox listen;
 	
 	/**
 	 * Lock must be held to access this variable.
@@ -40,7 +40,7 @@ public class LevelHelper {
 		return nextLevel;
 	}
 	
-	public LevelHelper(MsgHandler msg, GameEventListener listen) {
+	public LevelHelper(MsgHandler msg, MyTacoBox listen) {
 		this.msg = msg;
 		this.listen = listen;
 	}

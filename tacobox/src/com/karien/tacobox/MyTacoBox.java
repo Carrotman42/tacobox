@@ -4,10 +4,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.karien.taco.mapstuff.LevelHelper;
-import com.karien.tacobox.screens.Level;
+import com.karien.tacobox.screens.LoadingScreen;
 import com.karien.tacobox.screens.MainScreen;
 
-public class MyTacoBox extends Game implements GameEventListener {
+public class MyTacoBox extends Game {
 	private LevelHelper lvls;
 	private GameState state = GameState.Title;
 	
@@ -37,11 +37,13 @@ public class MyTacoBox extends Game implements GameEventListener {
 			}
 			break;
 		case Level:
-			super.render();
+			//super.render();
+			// nothing special other than rendering
 			break;
 		case LevelJustFinished:
 			System.out.println("You beat the level!");
 			lvls.loadNextLevel();
+			setScreen(new LoadingScreen());
 			state = GameState.LevelFinished;
 			break;
 		case LevelFinished:
@@ -60,15 +62,23 @@ public class MyTacoBox extends Game implements GameEventListener {
 		default:
 			throw new RuntimeException("Invalid state!");
 		}
+		super.render();
 	}
 	
-	@Override
 	public void goalReached() {
 		state = GameState.LevelJustFinished;
 	}
 
-	@Override
 	public void died() {
 		throw new RuntimeException("Not implemented!");
+	}
+	
+	public void menuChoice(String action) {
+		if (action.equals("start")) {
+			if (state != GameState.Title) {
+				throw new RuntimeException("Invalid state to call this function");
+			}
+			state = GameState.LoadFirstLevel;
+		}
 	}
 }

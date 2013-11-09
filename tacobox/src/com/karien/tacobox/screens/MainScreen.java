@@ -2,7 +2,6 @@ package com.karien.tacobox.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
@@ -13,14 +12,14 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.karien.taco.mapstuff.C;
 import com.karien.taco.mapstuff.MapActions;
-import com.karien.tacobox.GameEventListener;
+import com.karien.tacobox.MyTacoBox;
 import com.karien.tacobox.entities.Player;
 
 public class MainScreen implements Screen {
 
 	private final TiledMap map;
 	private final MapActions acts;
-	private final GameEventListener callback;
+	private final MyTacoBox callback;
 	
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
@@ -36,9 +35,6 @@ public class MainScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 		camera.position.lerp(new Vector3(mPlayer.getX() * mPlayer.TILE_WIDTH,
 				mPlayer.getY() * mPlayer.TILE_HEIGHT, 0), 0.5f);
 		camera.update();
