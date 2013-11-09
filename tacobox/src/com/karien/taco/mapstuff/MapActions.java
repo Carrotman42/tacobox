@@ -64,7 +64,7 @@ public class MapActions {
 	}
 	
 	
-	public void procRemoteMessage(ActionMessage id) {
+	public void checkRemoteMessage() {
 		
 	}
 }
