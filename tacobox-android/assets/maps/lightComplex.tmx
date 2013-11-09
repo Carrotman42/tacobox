@@ -9,7 +9,7 @@
  <tileset firstgid="1" name="dungeon" tilewidth="32" tileheight="32">
   <image source="DungeonCrawl_ProjectUtumnoTileset.png" width="2048" height="1536"/>
  </tileset>
- <layer name="canvas" width="20" height="20">
+ <layer name="canvas" width="20" height="20" visible="0">
   <data encoding="base64" compression="zlib">
    eJw7yMzAcHCQ4BNk4MFu3igexaOYdpjaZc5gM2+wYwBpBDmB
   </data>
@@ -28,7 +28,7 @@
     <property name="blocked" value="false"/>
     <property name="id" value="5"/>
     <property name="moveable" value="false"/>
-    <property name="onActivate" value="r13:disappear,l9:appear"/>
+    <property name="onActivate" value="r13:disappear,l9:appear,l7:disappear"/>
     <property name="visible" value="true"/>
    </properties>
   </object>
@@ -187,13 +187,11 @@
   <object gid="1040" x="416" y="288">
    <properties>
     <property name="id" value="7"/>
-    <property name="onActivate" value="l7:disappear"/>
    </properties>
   </object>
   <object gid="1040" x="192" y="224">
    <properties>
     <property name="id" value="4"/>
-    <property name="onActivate" value="l4:disappear"/>
    </properties>
   </object>
  </objectgroup>
