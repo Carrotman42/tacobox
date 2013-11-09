@@ -28,7 +28,7 @@ public class Player implements InputProcessor {
 
 	float mSpeed = 2f;
 
-	private final float TILE_WIDTH, TILE_HEIGHT;
+	public final float TILE_WIDTH, TILE_HEIGHT;
 
 	public Player(String spritePath, TiledMap map, MapActions actions) {
 		this(spritePath, map, actions, 0, 0);
@@ -56,12 +56,18 @@ public class Player implements InputProcessor {
 		mSprite.setPosition((int) x * TILE_WIDTH, (int) y * TILE_HEIGHT);
 	}
 
+	/**
+	 * @return X pos in tiles
+	 */
 	public int getX() {
-		return (int) ((int) (mPos.x) * TILE_WIDTH);
+		return (int) (mPos.x);
 	}
 
+	/**
+	 * @return Y pos in tiles
+	 */
 	public int getY() {
-		return (int) ((int) (mPos.y) * TILE_HEIGHT);
+		return (int) (mPos.y);
 	}
 
 	public boolean isBlocking(MapObject obj) {
@@ -80,7 +86,8 @@ public class Player implements InputProcessor {
 		MapObject obj = null;
 		for (MapObject object : mCollisionLayer.getObjects()) {
 			MapProperties props = object.getProperties();
-			if ((Integer) props.get("x") == x && (Integer) props.get("y") == y) {
+			if ((Integer) props.get("x") / TILE_WIDTH == x
+					&& (Integer) props.get("y") / TILE_HEIGHT == y) {
 				obj = object;
 				break;
 			}
@@ -91,8 +98,10 @@ public class Player implements InputProcessor {
 	/**
 	 * Try to move to tile at x,y
 	 */
-	public boolean move(int x, int y) {
-		MapObject obj = findObj(x, y);
+	public boolean move(float x, float y) {
+		int tileX = (int) x;
+		int tileY = (int) y;
+		MapObject obj = findObj(tileX, tileY);
 
 		if (obj != null && isBlocking(obj)) {
 			// See if object is movable
@@ -100,8 +109,8 @@ public class Player implements InputProcessor {
 			if (!moveable)
 				return false;
 			// See if object can be moved
-			int obj2X = getX() + 2 * (x - getX());
-			int obj2Y = getY() + 2 * (y - getY());
+			int obj2X = getX() + 2 * (tileX - getX());
+			int obj2Y = getY() + 2 * (tileY - getY());
 			MapObject obj2 = findObj(obj2X, obj2Y);
 			if (obj2 != null && isBlocking(obj2)) {
 				// Can't move obj
@@ -112,7 +121,7 @@ public class Player implements InputProcessor {
 			obj.getProperties().put("x", obj2X);
 			obj.getProperties().put("y", obj2Y);
 			// Do exit/enter
-			mActions.exit(x, y);
+			mActions.exit(tileX, tileY);
 			mActions.enter(obj2X, obj2Y);
 
 		}
@@ -124,13 +133,12 @@ public class Player implements InputProcessor {
 		setPosition(x, y);
 		// Do exit/enter
 		mActions.exit(oldX, oldY);
-		mActions.enter(x, y);
+		mActions.enter(tileX, tileY);
 
 		return true;
 	}
 
 	public void update(float delta) {
-		// Move player
 		int curX = getX();
 		int curY = getY();
 		float X, Y;
@@ -138,20 +146,18 @@ public class Player implements InputProcessor {
 		if (mVelocity.x != 0) {
 			X = mPos.x + mVelocity.x * delta * mSpeed;
 			if ((int) X - curX != 0) {
-				move((int) X, curY);
+				move(X, curY);
 			} else {
 				// Update partial position
-				setPosition(X, curY);
+				setPosition(X, mPos.y);
 			}
-		}
-
-		if (mVelocity.y != 0) {
+		} else if (mVelocity.y != 0) {
 			Y = mPos.y + mVelocity.y * delta * mSpeed;
 			if ((int) Y - curY != 0) {
-				move(curX, (int) Y);
+				move(curX, Y);
 			} else {
 				// Update partial position
-				setPosition(curX, Y);
+				setPosition(mPos.x, Y);
 			}
 		}
 
@@ -165,7 +171,7 @@ public class Player implements InputProcessor {
 	}
 
 	public void draw(SpriteBatch spriteBatch) {
-		update(Gdx.graphics.getDeltaTime());
+		update(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		mSprite.draw(spriteBatch);
 	}
 
