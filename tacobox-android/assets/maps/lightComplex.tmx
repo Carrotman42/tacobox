@@ -23,18 +23,6 @@
     <property name="onExit" value="r12:toggle"/>
    </properties>
   </object>
-  <object gid="1040" x="192" y="224">
-   <properties>
-    <property name="id" value="4"/>
-    <property name="onActivate" value="l4:disappear"/>
-   </properties>
-  </object>
-  <object gid="1040" x="416" y="288">
-   <properties>
-    <property name="id" value="7"/>
-    <property name="onActivate" value="l7:disappear"/>
-   </properties>
-  </object>
   <object gid="2987" x="128" y="160">
    <properties>
     <property name="blocked" value="false"/>
@@ -194,6 +182,18 @@
   <object gid="1193" x="544" y="288">
    <properties>
     <property name="id" value="11"/>
+   </properties>
+  </object>
+  <object gid="1040" x="416" y="288">
+   <properties>
+    <property name="id" value="7"/>
+    <property name="onActivate" value="l7:disappear"/>
+   </properties>
+  </object>
+  <object gid="1040" x="192" y="224">
+   <properties>
+    <property name="id" value="4"/>
+    <property name="onActivate" value="l4:disappear"/>
    </properties>
   </object>
  </objectgroup>

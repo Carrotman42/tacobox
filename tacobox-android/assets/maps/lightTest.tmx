@@ -125,7 +125,7 @@
   </object>
   <object type="lever" gid="1766" x="416" y="288">
    <properties>
-    <property name="onActivate" value="r4:disappear"/>
+    <property name="onActivated" value="r4:disappear"/>
    </properties>
   </object>
   <object gid="732" x="448" y="64"/>
