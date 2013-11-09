@@ -33,7 +33,7 @@ public class Player implements InputProcessor {
 
 	EFacing mFacing;
 
-	float mSpeed = 4f;
+	float mSpeed = 8f;
 
 	public final float TILE_WIDTH, TILE_HEIGHT;
 
@@ -111,34 +111,35 @@ public class Player implements InputProcessor {
 	public boolean move(float x, float y) {
 		int tileX = (int) x;
 		int tileY = (int) y;
+		int oldX = getX();
+		int oldY = getY();
 		MapObject obj = findObj(tileX, tileY);
 
-		if (obj != null && isBlocking(obj)) {
-			// See if object is movable
-			Boolean moveable = (Boolean) obj.getProperties().get(C.Moveable);
-			if (!moveable)
-				return false;
-			// See if object can be moved
-			int obj2X = getX() + 2 * (int) mVelocity.x;
-			int obj2Y = getY() + 2 * (int) mVelocity.y;
+		if (obj != null && isBlocking(obj) && obj != mGrabbedObj) {
+			return false;
+		}
+
+		// See if object is grabbed and can move
+		if (mGrabbedObj != null) {
+			int grabX = (int) ((Integer) mGrabbedObj.getProperties().get("x") / TILE_WIDTH);
+			int grabY = (int) ((Integer) mGrabbedObj.getProperties().get("y") / TILE_HEIGHT);
+			int obj2X = (int) (grabX + tileX - oldX);
+			int obj2Y = (int) (grabY + tileY - oldY);
 			MapObject obj2 = findObj(obj2X, obj2Y);
 			if (obj2 != null && isBlocking(obj2)) {
-				// Can't move obj
+				// Can't move
 				return false;
 			}
 
 			// Move obj
-			obj.getProperties().put("x", (int) (obj2X * TILE_WIDTH));
-			obj.getProperties().put("y", (int) (obj2Y * TILE_HEIGHT));
+			mGrabbedObj.getProperties().put("x", (int) (obj2X * TILE_WIDTH));
+			mGrabbedObj.getProperties().put("y", (int) (obj2Y * TILE_HEIGHT));
 			// Do exit/enter
-			mActions.exit(tileX, tileY);
+			mActions.exit(grabX, grabY);
 			mActions.enter(obj2X, obj2Y);
-
 		}
 
 		// Move Player
-		int oldX = getX();
-		int oldY = getY();
 
 		setPosition(x, y);
 		// Do exit/enter
@@ -227,7 +228,40 @@ public class Player implements InputProcessor {
 			mFacing = EFacing.E;
 			break;
 		case Keys.E:
+			// Action
 			mActions.activate(getX(), getY());
+			break;
+		case Keys.SPACE:
+			// Toggle grab
+			if (mGrabbedObj == null) {
+				// Find obj that the player is facing
+				MapObject obj = null;
+				switch (mFacing) {
+				case E:
+					obj = findObj(getX() + 1, getY());
+					break;
+				case N:
+					obj = findObj(getX(), getY() + 1);
+					break;
+				case W:
+					obj = findObj(getX() - 1, getY());
+					break;
+				case S:
+				default:
+					obj = findObj(getX(), getY() - 1);
+					break;
+				}
+				// Is the object moveable
+				if (obj != null) {
+					boolean moveable = (Boolean) obj.getProperties().get(
+							C.Moveable);
+					if (moveable) {
+						mGrabbedObj = obj;
+					}
+				}
+			} else {
+				mGrabbedObj = null;
+			}
 			break;
 		}
 		return true;
