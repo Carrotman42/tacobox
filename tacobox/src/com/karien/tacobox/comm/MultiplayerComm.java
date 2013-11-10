@@ -180,9 +180,9 @@ public class MultiplayerComm implements Runnable, MsgHandler {
 				} else {
 					last = msg.newMap;
 					System.out.println("Got map: " + msg);
+					write("#");
 					return msg.newMap.getPath(false);
 				}
-				write("#");
 			} while (true);
 		}
 	}
