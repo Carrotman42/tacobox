@@ -117,7 +117,7 @@ public class MenuScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
-		Window.drawDebug(stage);
+		// Window.drawDebug(stage);
 		// Table.drawDebug(stage); // This is optional, but enables debug lines
 		// for tables.
 	}
