@@ -14,10 +14,10 @@
  </tileset>
  <layer name="canvas" width="20" height="20">
   <data encoding="base64" compression="zlib">
-   eJytklEKgDAMQwf673Ynz7L7H0GG1LnZtOlQCMqY6WvasqdUFlU3fP6HPrXyrTP3b8RgsT7+7f+jS/zkrsWF+DQ/Ky/NL8I33Ad+c37ihfiYs5nxzYb4UH5zj+0Zegc9efP1douZs1fXytziQ3U1P5ZPnbnhx/bDvCN8Xr+R/Fh+li+yLwwruzcoG3afkYfmt8qr6QKJ5GE/
+   eJytklEKgDAMQwf6P3dJ738EGTLdXNKmQ6E4ZKYvacueUlmsc+Pf/6ip13HXdA6yPvr1//xW02t3LS7Gh/SsvJBehG+4T/Sm/DLOj7Ewvp6xZ2N8LL+vx/oM3oknb77ebilz9vpamVt8rC/SU/ngzA091Y/yjvB5fiP5qfwqX2RfFFZ1b1g26j4zDaS3yovqAv5tYVQ=
   </data>
  </layer>
- <objectgroup name="action" width="20" height="20">
+ <objectgroup name="action" width="20" height="20" visible="0">
   <object gid="4838" x="128" y="160">
    <properties>
     <property name="blocked" value="false"/>
@@ -51,8 +51,8 @@
    <properties>
     <property name="blocked" value="false"/>
     <property name="id" value="31"/>
-    <property name="onExit" value="l32:toggle"/>
     <property name="onEnter" value="l32:disappear"/>
+    <property name="onExit" value="l32:toggle"/>
    </properties>
   </object>
   <object gid="3083" x="32" y="64">
@@ -64,7 +64,7 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="object" width="20" height="20">
+ <objectgroup name="object" width="20" height="20" visible="0">
   <object gid="4199" x="448" y="416">
    <properties>
     <property name="id" value="29"/>
