@@ -95,7 +95,7 @@ public class MyTacoBox extends Game {
 				throw new RuntimeException(
 						"Invalid state to call this function: " + state);
 			}
-			multi = joinMultiplayer();
+			multi = joinMultiplayer("10.160.26.134");
 			state = GameState.LoadFirstLevel;
 		}
 	}
@@ -111,10 +111,20 @@ public class MyTacoBox extends Game {
 		}
 	}
 
-	private MultiplayerComm joinMultiplayer() {
-		System.out.println("Joinging multiplayer");
+	/**
+	 * Joins a multi-player game at <var>ipAddr</var>
+	 * 
+	 * @param ipAddr
+	 *            - The IP Address of the host, if null connects to localhost
+	 * @return a multi-player session
+	 */
+	private MultiplayerComm joinMultiplayer(String ipAddr) {
+		if (ipAddr == null) {
+			ipAddr = "127.0.0.1";
+		}
+		System.out.println("Joining multiplayer");
 		try {
-			return MultiplayerComm.connect("10.160.26.134", port);
+			return MultiplayerComm.connect(ipAddr, port);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
