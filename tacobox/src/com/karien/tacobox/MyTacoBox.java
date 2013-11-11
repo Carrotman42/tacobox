@@ -82,7 +82,7 @@ public class MyTacoBox extends Game {
 		throw new RuntimeException("Not implemented!");
 	}
 
-	public void menuChoice(String action) {
+	public void menuChoice(String action, String... params) {
 		if (action.equals("host")) {
 			if (state != GameState.WaitForAction) {
 				throw new RuntimeException(
@@ -95,7 +95,7 @@ public class MyTacoBox extends Game {
 				throw new RuntimeException(
 						"Invalid state to call this function: " + state);
 			}
-			multi = joinMultiplayer("10.160.26.134");
+			multi = joinMultiplayer(params[0]);
 			state = GameState.LoadFirstLevel;
 		}
 	}
@@ -122,7 +122,7 @@ public class MyTacoBox extends Game {
 		if (ipAddr == null) {
 			ipAddr = "127.0.0.1";
 		}
-		System.out.println("Joining multiplayer");
+		System.out.println("Joining multiplayer at " + ipAddr);
 		try {
 			return MultiplayerComm.connect(ipAddr, port);
 		} catch (Exception ex) {

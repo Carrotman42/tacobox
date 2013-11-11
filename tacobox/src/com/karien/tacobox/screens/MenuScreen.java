@@ -1,12 +1,10 @@
 package com.karien.tacobox.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -41,16 +39,25 @@ public class MenuScreen implements Screen {
 		// Create Dialog
 		Label ipLabel = new Label("Host Address: ", skin);
 		final TextField ipTextField = new TextField("127.0.0.1", skin);
+		TextButton connectBtn = new TextButton("Connect", skin);
+		connectBtn.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				parent.menuChoice("join", ipTextField.getText());
+			}
+		});
 
-		Window window = new Window("Dialog", skin);
-		window.getButtonTable().add(new TextButton("X", skin))
-				.height(window.getPadTop());
-		window.setPosition(0, 0);
-		window.defaults().spaceBottom(10);
-		window.row().fill().expandX();
-		window.add(ipLabel);
-		window.add(ipTextField);
-		window.pack();
+		final Window joinDialog = new Window("Connect to...", skin);
+		joinDialog.debug();
+		joinDialog.getButtonTable().add(new TextButton("X", skin))
+				.height(joinDialog.getPadTop());
+		joinDialog.setPosition(0, 0);
+		joinDialog.defaults().spaceBottom(10);
+		joinDialog.row().fill().expandX();
+		joinDialog.add(ipLabel);
+		joinDialog.add(ipTextField);
+		joinDialog.row();
+		joinDialog.add(connectBtn).colspan(2).align(Align.center);
+		joinDialog.pack();
 
 		// Create a table that fills the screen. Everything else will go inside
 		// this table.
@@ -86,14 +93,7 @@ public class MenuScreen implements Screen {
 		joinBtn.getLabel().setFontScale(2f);
 		joinBtn.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				new Dialog("Connect to...", skin, "dialog") {
-					protected void result(Object object) {
-						System.out.println("Chosen: " + ipTextField.getText());
-						parent.menuChoice("join");
-					}
-				}.button("Connect", true).button("Cancel", false)
-						.key(Keys.ENTER, true).key(Keys.ESCAPE, false)
-						.show(stage);
+				stage.addActor(joinDialog);
 			}
 		});
 
@@ -117,6 +117,7 @@ public class MenuScreen implements Screen {
 		stage.act(delta);
 		stage.draw();
 
+		Window.drawDebug(stage);
 		// Table.drawDebug(stage); // This is optional, but enables debug lines
 		// for tables.
 	}
