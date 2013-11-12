@@ -24,21 +24,16 @@ public class MenuScreen implements Screen {
 
 	public MenuScreen(MyTacoBox callback) {
 		parent = callback;
+		skin = parent.getDefaultSkin();
 	}
 
 	public void createUI() {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
-		// A skin can be loaded via JSON or defined programmatically, either is
-		// fine. Using a skin is optional but strongly
-		// recommended solely for the convenience of getting a texture, region,
-		// etc as a drawable, tinted drawable, etc.
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-
 		// Create Dialog
 		Label ipLabel = new Label("Host Address: ", skin);
-		final TextField ipTextField = new TextField("127.0.0.1", skin);
+		final TextField ipTextField = new TextField("", skin);
 		TextButton connectBtn = new TextButton("Connect", skin);
 		connectBtn.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {

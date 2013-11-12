@@ -3,6 +3,7 @@ package com.karien.tacobox;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.karien.taco.mapstuff.LevelHelper;
 import com.karien.tacobox.comm.MultiplayerComm;
 import com.karien.tacobox.screens.LoadingScreen;
@@ -12,11 +13,16 @@ import com.karien.tacobox.screens.MenuScreen;
 public class MyTacoBox extends Game {
 	private LevelHelper lvls;
 	private GameState state = GameState.Title;
-
+	private Skin skin;
 	private MultiplayerComm multi;
 
 	@Override
 	public void create() {
+		// A skin can be loaded via JSON or defined programmatically, either is
+		// fine. Using a skin is optional but strongly
+		// recommended solely for the convenience of getting a texture, region,
+		// etc as a drawable, tinted drawable, etc.
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 	}
 
 	@Override
@@ -104,6 +110,8 @@ public class MyTacoBox extends Game {
 
 	private MultiplayerComm hostMultiplayer() {
 		System.out.println("Hosting multiplayer");
+		setScreen(new LoadingScreen());
+		// TODO: run connect on separate thread
 		try {
 			return MultiplayerComm.connect(port);
 		} catch (Exception ex) {
@@ -119,14 +127,23 @@ public class MyTacoBox extends Game {
 	 * @return a multi-player session
 	 */
 	private MultiplayerComm joinMultiplayer(String ipAddr) {
-		if (ipAddr == null) {
+		if (ipAddr == null || ipAddr.isEmpty()) {
 			ipAddr = "127.0.0.1";
 		}
 		System.out.println("Joining multiplayer at " + ipAddr);
+		setScreen(new LoadingScreen());
+		// TODO: run connect on separate thread
 		try {
 			return MultiplayerComm.connect(ipAddr, port);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	/**
+	 * @return the default skin for the application
+	 */
+	public Skin getDefaultSkin() {
+		return skin;
 	}
 }
