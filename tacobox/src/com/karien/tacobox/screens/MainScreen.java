@@ -3,6 +3,7 @@ package com.karien.tacobox.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
@@ -19,8 +20,9 @@ import com.karien.taco.mapstuff.C;
 import com.karien.taco.mapstuff.MapActions;
 import com.karien.tacobox.MyTacoBox;
 import com.karien.tacobox.entities.Player;
+import com.karien.tacobox.entities.Player.EFacing;
 
-public class MainScreen implements Screen, GestureListener {
+public class MainScreen implements Screen, InputProcessor, GestureListener {
 
 	private final TiledMap map;
 	private final MapActions acts;
@@ -96,7 +98,7 @@ public class MainScreen implements Screen, GestureListener {
 				* mPlayer.TILE_HEIGHT, 0);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(new GestureDetector(
-				this), mPlayer, new GestureDetector(mPlayer)));
+				this), this));
 	}
 
 	@Override
@@ -146,21 +148,21 @@ public class MainScreen implements Screen, GestureListener {
 
 		if (dir.y != 0) {
 			if (dir.y == 1) {
-				mPlayer.keyDown(Keys.DOWN);
+				keyDown(Keys.DOWN);
 			} else {
-				mPlayer.keyDown(Keys.UP);
+				keyDown(Keys.UP);
 			}
 		}
 
 		if (dir.x != 0) {
 			if (dir.x == 1) {
-				mPlayer.keyDown(Keys.RIGHT);
+				keyDown(Keys.RIGHT);
 			} else {
-				mPlayer.keyDown(Keys.LEFT);
+				keyDown(Keys.LEFT);
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	@Override
@@ -215,6 +217,110 @@ public class MainScreen implements Screen, GestureListener {
 			Vector2 pointer1, Vector2 pointer2) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		Vector2 velocity = mPlayer.getHeading();
+		switch (keycode) {
+		case Keys.W:
+		case Keys.UP:
+			// Move up
+			velocity.y = 1;
+			mPlayer.setFacing(EFacing.N);
+			break;
+		case Keys.A:
+		case Keys.LEFT:
+			// Move left
+			velocity.x = -1;
+			mPlayer.setFacing(EFacing.W);
+			break;
+		case Keys.S:
+		case Keys.DOWN:
+			// Move down
+			velocity.y = -1;
+			mPlayer.setFacing(EFacing.S);
+			break;
+		case Keys.D:
+		case Keys.RIGHT:
+			// Move right
+			velocity.x = 1;
+			mPlayer.setFacing(EFacing.E);
+			break;
+		case Keys.E:
+			// Action
+			mPlayer.activate();
+			break;
+		case Keys.SPACE:
+			// Grab
+			mPlayer.grab();
+			break;
+		}
+		mPlayer.setVelocity(velocity.x, velocity.y);
+		System.out.println("Player Heading: " + mPlayer.getHeading());
+		return true;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		Vector2 heading = mPlayer.getHeading();
+		switch (keycode) {
+		case Keys.W:
+		case Keys.UP:
+		case Keys.S:
+		case Keys.DOWN:
+			// Stop vertical movement
+			mPlayer.setVelocity(heading.x, 0);
+			break;
+		case Keys.A:
+		case Keys.LEFT:
+		case Keys.D:
+		case Keys.RIGHT:
+			// Stop horizontal movement
+			mPlayer.setVelocity(0, heading.y);
+			break;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		keyUp(Keys.UP);
+		keyUp(Keys.DOWN);
+		keyUp(Keys.LEFT);
+		keyUp(Keys.RIGHT);
+		return true;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		float zoom = lastZoomDistance + 50 * amount;
+		System.out.println("Mouse Scroll: " + zoom);
+		return zoom(0, zoom);
 	}
 
 }
