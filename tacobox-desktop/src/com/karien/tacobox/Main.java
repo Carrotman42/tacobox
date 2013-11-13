@@ -8,9 +8,9 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "tacobox";
 		cfg.useGL20 = true;
-		cfg.width = 480;
-		cfg.height = 320;
-		
+		cfg.width = MyTacoBox.SCREEN_WIDTH;
+		cfg.height = MyTacoBox.SCREEN_HEIGHT;
+
 		new LwjglApplication(new MyTacoBox(), cfg);
 	}
 }

@@ -16,6 +16,9 @@ public class MyTacoBox extends Game {
 	private Skin skin;
 	private MultiplayerComm multi;
 
+	public static final int SCREEN_WIDTH = 480;
+	public static final int SCREEN_HEIGHT = 320;
+
 	@Override
 	public void create() {
 		// A skin can be loaded via JSON or defined programmatically, either is

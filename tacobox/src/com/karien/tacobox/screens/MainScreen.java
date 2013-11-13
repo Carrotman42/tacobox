@@ -28,8 +28,8 @@ public class MainScreen implements Screen, GestureListener {
 
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
-	private int screenWidth;
-	private int screenHeight;
+	// private int screenWidth;
+	// private int screenHeight;
 	private float lastZoomDistance;
 
 	Player mPlayer;
@@ -78,10 +78,8 @@ public class MainScreen implements Screen, GestureListener {
 
 	@Override
 	public void resize(int width, int height) {
-		screenWidth = width;
-		screenHeight = height;
-		camera.viewportWidth = width;
-		camera.viewportHeight = height;
+		camera.viewportWidth = MyTacoBox.SCREEN_WIDTH;
+		camera.viewportHeight = MyTacoBox.SCREEN_HEIGHT;
 	}
 
 	@Override
