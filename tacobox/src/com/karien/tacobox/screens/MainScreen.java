@@ -30,8 +30,6 @@ public class MainScreen implements Screen, InputProcessor, GestureListener {
 
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
-	// private int screenWidth;
-	// private int screenHeight;
 	private float lastZoomDistance;
 
 	Player mPlayer;
