@@ -97,8 +97,10 @@ public class MainScreen implements Screen, InputProcessor, GestureListener {
 		camera.position.set(mPlayer.getX() * mPlayer.TILE_WIDTH, mPlayer.getY()
 				* mPlayer.TILE_HEIGHT, 0);
 
-		Gdx.input.setInputProcessor(new InputMultiplexer(new GestureDetector(
-				this), this));
+		GestureDetector gDetector = new GestureDetector(this);
+		gDetector.setLongPressSeconds(0.25f);
+
+		Gdx.input.setInputProcessor(new InputMultiplexer(gDetector, this));
 	}
 
 	@Override
@@ -132,15 +134,20 @@ public class MainScreen implements Screen, InputProcessor, GestureListener {
 				"touched Screen: (%f, %f) World: (%f,%f) Tiles: (%f,%f)", x, y,
 				touchPt.x, touchPt.y, tileTouch.x, tileTouch.y));
 
+		// Check for activation
+		if (Math.abs(mPlayer.getX() - tileTouch.x) <= 1
+				&& Math.abs(mPlayer.getY() - tileTouch.y) <= 1) {
+			mPlayer.activate();
+			return true;
+		}
+
 		// translate touch into movement
 		Vector2 dir = new Vector2();
 		if (mPlayer.getX() - tileTouch.x > 1) {
 			dir.x = -1;
 		} else if (tileTouch.x - mPlayer.getX() > 1) {
 			dir.x = 1;
-		}
-
-		if (mPlayer.getY() - tileTouch.y > 1) {
+		} else if (mPlayer.getY() - tileTouch.y > 1) {
 			dir.y = 1;
 		} else if (tileTouch.y - mPlayer.getY() > 1) {
 			dir.y = -1;
@@ -152,9 +159,7 @@ public class MainScreen implements Screen, InputProcessor, GestureListener {
 			} else {
 				keyDown(Keys.UP);
 			}
-		}
-
-		if (dir.x != 0) {
+		} else if (dir.x != 0) {
 			if (dir.x == 1) {
 				keyDown(Keys.RIGHT);
 			} else {
@@ -173,8 +178,21 @@ public class MainScreen implements Screen, InputProcessor, GestureListener {
 
 	@Override
 	public boolean longPress(float x, float y) {
-		// TODO Auto-generated method stub
-		return false;
+		Vector3 touchPt = new Vector3(x, y, 0);
+		camera.unproject(touchPt);
+		Vector2 tileTouch = new Vector2((int) (touchPt.x / mPlayer.TILE_WIDTH),
+				(int) (touchPt.y / mPlayer.TILE_HEIGHT));
+
+		System.out.println(String.format(
+				"long press Screen: (%f, %f) World: (%f,%f) Tiles: (%f,%f)", x,
+				y, touchPt.x, touchPt.y, tileTouch.x, tileTouch.y));
+
+		// Check for activation
+		if (Math.abs(mPlayer.getX() - tileTouch.x) <= 1
+				&& Math.abs(mPlayer.getY() - tileTouch.y) <= 1) {
+			keyDown(Keys.SPACE);
+		}
+		return true;
 	}
 
 	@Override
